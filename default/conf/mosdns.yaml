@@ -1,0 +1,157 @@
+log:
+    level: info    # 日志级别。可选 "debug" "info" "warn" "error"。默认 "info"。
+    production: false    # 纯 json 输出。
+    file: "/nestingdns/log/mosdns.log"    # (实验性) 记录日志到文件。默认输出至 stderr。
+                                          # 注意: 日志应由守护进程处理而不是直接写入文件。
+                                          # 此选项仅用于调试。panic 日志不会被记录，其内容仍会
+                                          # 输出至 stderr 。
+
+# (实验性) API 入口设置    
+#api:
+#  http: "127.0.0.1:8080" # 在该地址启动 api 接口。
+
+# []string, 从其他配置文件载入 plugins 插件设置。
+# include 的插件会比本配置文件中的插件先初始化。
+include: []
+
+# 插件设置
+plugins:
+  - tag: "geosite-cn"      # 插件的 tag。由用户自由设定但不能重复。可省略。
+    type: "domain_set"     # domain_set插件，载入的域名表可供其他插件引用。插件加载后，数据只占一份内存。引用的数据是共享的，多次被引用不会消耗格外内存。
+    args:                  # 插件参数。取决于插件类型。
+      files:               # 从文本文件载入
+        - "/nestingdns/etc/site/direct-list.txt"
+        - "/nestingdns/etc/site/apple-cn.txt"
+        - "/nestingdns/etc/site/google-cn.txt"
+        - "/nestingdns/etc/site/force-cn.txt"    # 自定义国内域名
+
+  - tag: "geosite-nocn"
+    type: "domain_set"
+    args:
+      files: 
+        - "/nestingdns/etc/site/proxy-list.txt"
+        - "/nestingdns/etc/site/gfw.txt"
+        - "/nestingdns/etc/site/force-nocn.txt"  # 自定义国际域名
+
+  - tag: "geoip-cn"
+    type: ip_set
+    args:
+      files: "/nestingdns/etc/site/CN-ip-cidr.txt"
+
+  - tag: "hosts_local"
+    type: "hosts"    # hosts插件，域名映射 IP 。如果请求的域名在 hosts 内，则将应答放入请求。虽然都叫 hosts，但本插件所用的格式和平常 Win，Linux 系统内的那个 hosts 文件不一样。
+    args:
+      files: "/nestingdns/etc/site/hosts.txt"
+
+  - tag: "cache_local" # mosdns仅做临时缓存，主要缓存又smartdns处理
+    type: "cache"    # 缓存 DNS 应答的插件。如果请求命中缓存，则将缓存的应答放入请求。当某一请求经过 cache 后，cache 会在这个请求处理流程结束时自动将应答放入缓存。用户无需介入。注意: 本插件是本地缓存(适用于客户端或者局域网内的缓存)。不适用于服务器端缓存。不支持扩展 DNS 协议 (即 EDNS0)，请求的 EDNS0 部分会被无视，应答的 EDNS0 会被略去。
+    args:
+      size: 1024     # 内置内存缓存大小。单位: 条。默认: 1024。每个 cache 插件的内存缓存是独立的。
+      # (实验性) lazy cache 设定。lazy_cache_ttl > 0 会启用 lazy cache。
+      # 所有应答都会在缓存中存留 lazy_cache_ttl 秒，但自身的 TTL 仍然有效。如果命中过期的应答，
+      # 则缓存会立即返回 TTL 为 5 的应答，然后自动在后台发送请求更新数据。
+      # 相比强行增加应答自身的 TTL 的方法，lazy cache 能提高命中率，同时还能保持一定的数据新鲜度。
+      lazy_cache_ttl: 0      # lazy cache 生存时间。单位: 秒。默认: 0 (禁用 lazy cache)。
+      # (实验性) 将缓存保存在磁盘。插件启动时也会自动从该文件载入缓存。
+      # 缓存将在 mosdns 被关闭时保存。
+      dump_file: "/nestingdns/work/mosdns/cache.dump"
+      # (实验性) 自动保存间隔。单位秒。默认 600。
+      # 如果距离上次 dump 有 size 次更新，则自动保存。
+      dump_interval: 3600
+
+  # DNS 转发插件
+  - tag: "forward_overseas"   # 转发至 overseas 域名解析服务
+    type: "forward"           # forward插件，转发请求至上游服务器。获取应答后放入请求。
+    args:
+      concurrent: 1           # 并发数。每次请求会从下面配置的 upstreams 里随机选取 concurrent 个 upstreams 发送请求。取最快返回的应答。超过 3 最多选 3 个。默认 1 。
+      upstreams:
+        - tag: "smartdns_overseas"          # 本上游的 tag。用于标识和 log。可省略。同一插件内该 tag 必需唯一。建议全局唯一。
+          addr: "udp://127.0.0.1:6053"      # 服务器地址。格式: [protocol://]host[:port][/path]
+  
+  # DNS 转发插件
+  - tag: "forward_mainland"   # 转发至 mainland 域名解析服务
+    type: "forward"           
+    args:
+      concurrent: 1          
+      upstreams:
+        - tag: "smartdns_mainland"
+          addr: "udp://127.0.0.1:7053"
+
+  # DNS 转发插件
+  - tag: "forward_gfw"        # 转发至 gfw 域名解析服务
+    type: "forward"
+    args:
+      concurrent: 1
+      upstreams:
+        - tag: "smartdns_gfw"
+          addr: "udp://127.0.0.1:8053"
+
+  - tag: "primary_forward"
+    type: "sequence"     # 按顺序组合多个插件，sequence 是个可执行插件。可以被其他插件(比如服务器插件)调用。sequence 与 sequence 联动请使用自带的跳转命令 (goto, jump ...)，不要使用 exec 。
+    args:
+      - exec: $forward_mainland
+      - matches:                # 匹配条件。多个匹配条件为 AND 关系。如返回的 IP 不为国内地址，则抛弃。
+        - "!resp_ip $geoip-cn"
+        - "has_resp"
+        exec: drop_resp
+
+  - tag: "secondary_forward"
+    type: "sequence"
+    args:
+      - exec: $forward_gfw
+      - matches:
+        - rcode 2                 # 匹配应答的 RCODE
+        exec: $forward_overseas   # 在 gfw 代理无法使用时，回退使用 overseas 组解析。
+
+  - tag: "final_forward"
+    type: "fallback"    # 回滚机制: 如果 primary 抛出错误，或返回但没有应答，或在 threshold 毫秒内无响应，则执行 secondary 。因无响应触发 fallback  时，如果 primary 比 secondary 先返回了应答，则依旧会采用 primary 的应答。 fallback 是多线程。primary 和 secondary 是独立的线程，它们收到的请求是 fallback 收到的请求的镜像。任何一方对请求做出修改不会影响对方，也不会影响 fallback 所在的 sequence 。如果 primary 和 secondary 是 sequence ，则它是一级/根 sequence。
+    args:
+      primary: primary_forward      # 主可执行插件的 tag
+      secondary: secondary_forward  # 副可执行插件的 tag
+      threshold: 150                # 无响应回滚阈值。单位毫秒。默认 500 。
+      always_standby: true          # secondary 会和 primary 一并执行。secondary 的结果将会在需要回滚时，立刻被采用。 
+
+  - tag: "main_sequence"
+    type: "sequence"
+    args:
+      - exec: $hosts_local
+      - exec: query_summary hosts_local   # 以 info 级别在 log 打印请求的摘要。包含: 请求的域名，类型，客户端 IP，应答的 RCODE，错误信息，后续规则处理请求的用时。
+      - matches: has_wanted_ans     # 如果有期望的 ANSWER，返回 true 。"期望的ANSWER "指应答的 ANSWER 中包含和 QUESTOIN 类型相同的 record。比如请求 A 记录，应答里返回了 A 记录，则该判断为 true。请求 AAAA 记录，虽然返回了SUCCESS 应答但无 AAAA 记录，返回 false 。
+        exec: accept
+
+      - exec: query_summary qtype65
+      - matches:
+        - qtype 65
+        exec: reject 0
+
+      - exec: $cache_local
+      - exec: query_summary cache_local
+      - matches: has_wanted_ans
+        exec: accept
+
+      - exec: prefer_ipv4     #  让下游客户端支持双栈时优先使用 IPv4
+
+      # mainland 域名解析
+      - matches:
+        - qname $geosite-cn
+        exec: $forward_mainland
+      - exec: query_summary geosite-cn
+      - matches: has_wanted_ans
+        exec: accept
+      
+      # gfw 域名解析
+      - matches:
+        - qname $geosite-nocn
+        exec: $forward_gfw
+      - exec: query_summary geosite-nocn
+      - matches: has_wanted_ans
+        exec: accept
+      
+      # 其它域名解析
+      - exec: $final_forward
+
+  - tag: "udp_server"
+    type: "udp_server"
+    args:
+      entry: main_sequence 
+      listen: 0.0.0.0:5053
