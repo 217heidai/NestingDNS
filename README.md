@@ -3,8 +3,7 @@ DNS 三大神器 [AdGuardHome](https://github.com/AdguardTeam/AdGuardHome)、[Mo
 不，小孩子才做选择，我全都要。  
 于是有了这个项目，套娃使用三大神器，试图找到一套最佳实践。
 
-# 架构
-## DNS 解析流程
+# DNS 解析流程
 1. AdGuardHome 为第一层 DNS ，作为整体入口，监听端口 4053。
 - 负责去广告。
 2. MosDNS 为第二层 DNS，监听端口 5053。
