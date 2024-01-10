@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# 清空日志文件
+rm -rf /nestingdns/log/update.log
+rm -rf /nestingdns/log/*.gz
+
 # 准备下载路径
 if [ -d /tmp/nestingdns ]; then
     rm -rf /tmp/nestingdns
@@ -62,4 +66,5 @@ fi
 # 重启 mosdns
 echo `date "+%Y/%m/%d %H.%M.%S"`' [info] restart mosdns'
 pkill -f /nestingdns/bin/mosdns
+rm -rf /nestingdns/log/mosdns.log
 nohup /nestingdns/bin/mosdns start -c /nestingdns/etc/conf/mosdns.yaml -d /nestingdns/work/mosdns > /dev/null 2>&1 &
