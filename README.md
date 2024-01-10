@@ -64,7 +64,7 @@ docker run -d \
 ## AdGuardHome
 AdGuardHome 配置文件为 `$HOME/nestingdns/etc/conf/adguardhome.yaml`。
 - **默认已配置好，一般无需调整**。
-- 可通过 3000 端口的 web 进行配置。
+- 可通过 3000 端口的 web 进行配置，默认账号 root 密码 password。
 - 已内置去广告规则 [AdBlock DNS Filters](https://github.com/217heidai/adblockfilters)。
 
 ## MosDNS
