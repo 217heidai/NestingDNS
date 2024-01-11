@@ -89,19 +89,19 @@ plugins:
   - tag: "dns_overseas"
     type: "sequence"     # 按顺序组合多个插件，sequence 是个可执行插件。可以被其他插件(比如服务器插件)调用。sequence 与 sequence 联动请使用自带的跳转命令 (goto, jump ...)，不要使用 exec 。
     args:
-      - exec: query_summary forward_overseas
+      - exec: query_summary
       - exec: $forward_overseas
   
   - tag: "dns_mainland"
     type: "sequence"     # 按顺序组合多个插件，sequence 是个可执行插件。可以被其他插件(比如服务器插件)调用。sequence 与 sequence 联动请使用自带的跳转命令 (goto, jump ...)，不要使用 exec 。
     args:
-      - exec: query_summary forward_mainland
+      - exec: query_summary
       - exec: $forward_mainland
   
   - tag: "dns_gfw"
     type: "sequence"     # 按顺序组合多个插件，sequence 是个可执行插件。可以被其他插件(比如服务器插件)调用。sequence 与 sequence 联动请使用自带的跳转命令 (goto, jump ...)，不要使用 exec 。
     args:
-      - exec: query_summary forward_gfw
+      - exec: query_summary
       - exec: $forward_gfw
 
   - tag: "primary_forward"
@@ -132,19 +132,19 @@ plugins:
   - tag: "match_hosts"
     type: "sequence"
     args:
-      - exec: query_summary match_hosts
+      - exec: query_summary
       - exec: accept
   
   - tag: "match_qtype65"
     type: "sequence"
     args:
-      - exec: query_summary match_qtype65
+      - exec: query_summary
       - exec: reject 0
   
   - tag: "match_cache"
     type: "sequence"
     args:
-      - exec: query_summary match_cache
+      - exec: query_summary
       - exec: accept
   
   - tag: "main_sequence"
