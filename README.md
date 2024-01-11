@@ -72,7 +72,7 @@ MosDNS 配置文件为 `$HOME/nestingdns/etc/conf/mosdns.yaml`。
 - **默认已配置好，一般无需调整**。
 - 各项配置可参考官方 [wiki](https://irine-sistiana.gitbook.io/mosdns-wiki/)。
 - 分流规则文件路径为 `$HOME/nestingdns/etc/site/`。根据创建容器时的 SCHEDULE 参数，定时下载更新分流规则文件，默认每天 4 点更新。
-- 自定义不走代理规则文件为 `$HOME/nestingdns/etc/site/force-cn.txt`。默认为空，可自行添加内容。
+- 自定义不走代理规则文件为 `$HOME/nestingdns/etc/site/force-cn.txt`。默认为空，可自行添加内容，如填入 VPS 的域名。
 - 自定义走代理规则文件为 `$HOME/nestingdns/etc/site/force-nocn.txt`。默认为空，可自行添加内容。
 
 ## SmartDNS
