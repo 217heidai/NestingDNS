@@ -39,8 +39,8 @@ plugins:
   - tag: "best_ip"
     type: "sequence"
     args:
-      - matches:
-        - "resp_ip $geoip-cloudflare"  # cloudflare 优选
+      - matches: 
+        - resp_ip $geoip-cloudflare  # cloudflare 优选
         exec: jump $blackhole_cloudflare
 
   - tag: "ecs_tw"
@@ -86,8 +86,8 @@ plugins:
     args:
       - exec: jump $dns_mainland     # jump sequence_tag。将开始执行目标 sequence，目标 sequence 结束或 return 后，返回本 sequence 继续执行。目标 sequence accept/reject 后，本 sequence 和所有上级的 sequence 不再继续执行后续规则。
       - matches:                # 匹配条件。多个匹配条件为 AND 关系。
-        - "!resp_ip $geoip-cn"
-        - "has_resp"
+        - !resp_ip $geoip-cn
+        - has_resp
         exec: drop_resp         # 如返回的 IP 不为国内地址，则抛弃。
 
   # fallback 的 secondary
