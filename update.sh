@@ -1,17 +1,17 @@
 #!/bin/sh
 
 function update_site(){
-    filename = $1
-    url = $2
+    filename=$1
+    url=$2
 
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] update site file: '`$filename`
-    curl $url > /tmp/nestingdns/$filename
+    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] update site file: '`${filename}`
+    curl ${url} > /tmp/nestingdns/${filename}
 
-    if [ -f /tmp/nestingdns/$filename ]; then
-        if [ -f /nestingdns/etc/site/$filename ]; then
-            rm -rf /nestingdns/etc/site/$filename
+    if [ -f /tmp/nestingdns/${filename} ]; then
+        if [ -f /nestingdns/etc/site/${filename} ]; then
+            rm -rf /nestingdns/etc/site/${filename}
         fi
-        mv /tmp/nestingdns/$filename /nestingdns/etc/site/
+        mv /tmp/nestingdns/${filename} /nestingdns/etc/site/
     fi
 }
 
