@@ -85,11 +85,11 @@ init_dir /nestingdns/work/adguardhome
 
 
 # 设置时区及定时任务
-if [ -f /nestingdns/default/init ]; then
+if [ -d /nestingdns/default ]; then
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
 	echo $TZ > /etc/timezone
     echo "$SCHEDULE /nestingdns/bin/update.sh >> /nestingdns/log/update.log 2>&1 &" >> /var/spool/cron/crontabs/root
-    rm -rf /nestingdns/default/init
+    rm -rf /nestingdns/default
 fi
 
 
