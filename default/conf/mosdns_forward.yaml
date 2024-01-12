@@ -46,12 +46,12 @@ plugins:
   - tag: "ecs_tw"
     type: "sequence"
     args:
-      - exec: ecs 168.95.0.0/16 2001:b000:100::/40
+      - exec: ecs 168.95.0.0/16
   
   - tag: "ecs_us"
     type: "sequence"
     args:
-      - exec: ecs 38.94.109.0/24 2602:fbdb::/40
+      - exec: ecs 38.94.109.0/24
   
   # 调用 forward_overseas 解析，并记录日志
   - tag: "dns_overseas"
