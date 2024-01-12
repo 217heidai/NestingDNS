@@ -41,7 +41,7 @@ plugins:
     args:
       - matches:
         - "resp_ip $geoip-cloudflare"  # cloudflare 优选
-        - exec: jump $blackhole_cloudflare
+        exec: jump $blackhole_cloudflare
 
   - tag: "ecs_tw"
     type: "sequence"
