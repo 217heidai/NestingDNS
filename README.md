@@ -68,20 +68,18 @@ AdGuardHome 配置文件为 `$HOME/nestingdns/etc/conf/adguardhome.yaml`。
 
 ## MosDNS
 MosDNS 配置文件为 `$HOME/nestingdns/etc/conf/mosdns.yaml`、`$HOME/nestingdns/etc/conf/mosdns_load_rules.yaml`、`$HOME/nestingdns/etc/conf/mosdns_forward.yaml`。
-- ***默认已配置好，一般无需调整***。
-- 各项配置可参考官方 [wiki](https://irine-sistiana.gitbook.io/mosdns-wiki/)。
+- ***默认已配置好，一般无需调整***。各项配置可参考官方 [wiki](https://irine-sistiana.gitbook.io/mosdns-wiki/)。
 - 分流规则文件路径为 `$HOME/nestingdns/etc/site/`。根据创建容器时的 SCHEDULE 参数，定时下载更新分流规则文件，默认每天 4 点更新。
 - 自定义不走代理规则文件为 `$HOME/nestingdns/etc/site/force-cn.txt`。默认为空，可自行添加内容，如填入 VPS 的域名。
 - 自定义走代理规则文件为 `$HOME/nestingdns/etc/site/force-nocn.txt`。默认为空，可自行添加内容。
-- gfw ttl 默认修改为 600s，`$HOME/nestingdns/etc/conf/mosdns_forward.yaml` 中设置 sequence dns_gfw，***如有多个代理地址切换使用的，需设置较小值***。（上游 smartdns gfw 组默认已关闭缓存、测速）
-- ECS (EDNS0 Client Subnet) ，默认关闭。如需启用，请在 `$HOME/nestingdns/etc/conf/mosdns_forward.yaml` 中找到所有 ecs_us，设置 VPS 所在地 IP。
+- gfw TTL 默认修改为 600s，`$HOME/nestingdns/etc/conf/mosdns_forward.yaml` 中设置 sequence dns_gfw，***如有多个代理地址切换使用的，请设置较小值，如 60***。（上游 smartdns gfw 组默认已关闭缓存、测速）
+- ECS (EDNS0 Client Subnet) ，默认关闭。如需启用，请在 `$HOME/nestingdns/etc/conf/mosdns_forward.yaml` 中找到 ecs_us，设置为 VPS 所在地 IP，并放开调用前的注释。
 - CDN IP 优选，默认关闭。如需启用，请在 `$HOME/nestingdns/etc/conf/mosdns_forward.yaml` 中找到所有 best_ip，删掉注释，并设置相应 black_hole ip（建议多填几个不同网段的 ip）。测速工具推荐使用 [CloudflareSpeedTest](https://github.com/XIU2/CloudflareSpeedTest)（注意测速必须关闭代理）。由于测速需关闭代理，因此未做成自动化脚本，请定期手工测速。
     - cloudflare 优选，请将测速较快的 ip 填入 `$HOME/nestingdns/etc/conf/mosdns_forward.yaml` 中 sequence blackhole_cloudflare。
 
 ## SmartDNS
 SmartDNS 配置文件为 `$HOME/nestingdns/etc/conf/smartdns.conf`。
-- **除代理外，其它默认已配置好，一般无需调整**。
-- 各项配置可参考官方 [wiki](https://pymumu.github.io/smartdns/)。
+- **除代理外，其它默认已配置好，一般无需调整**。各项配置可参考官方 [wiki](https://pymumu.github.io/smartdns/)。
 - **使用科学上网的，请为 gfw 组配置通过代理进行 DNS 解析**，配置方式参见官方 [wiki proxy 部分](https://pymumu.github.io/smartdns/config/proxy/)。不使用科学上网的，无需配置。
 
 # 测试方法

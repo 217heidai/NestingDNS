@@ -4,7 +4,7 @@ function init_dir(){
     dir=$1
 
     if [ ! -d ${dir} ]; then
-        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init dir: '`${dir}`
+        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init dir: '${dir}
         mkdir -p ${dir}
     fi
 }
@@ -13,7 +13,7 @@ function init_file_conf(){
     filename=$1
 
     if [ ! -f /nestingdns/etc/conf/${filename} ]; then
-        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init conf file: '`${filename}`
+        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init conf file: '${filename}
         cp /nestingdns/default/conf/${filename} /nestingdns/etc/conf/
     fi
 }
@@ -22,7 +22,7 @@ function init_file_site(){
     filename=$1
 
     if [ ! -f /nestingdns/etc/site/${filename} ]; then
-        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init site file: '`${filename}`
+        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init site file: '${filename}
         if [ -f /nestingdns/default/site/${filename} ]; then
             cp /nestingdns/default/site/${filename} /nestingdns/etc/site/
         else

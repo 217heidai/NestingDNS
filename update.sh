@@ -4,7 +4,7 @@ function update_site(){
     filename=$1
     url=$2
 
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] update site file: '`${filename}`
+    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] update site file: '${filename}
     curl ${url} > /tmp/nestingdns/${filename}
 
     if [ -f /tmp/nestingdns/${filename} ]; then
