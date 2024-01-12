@@ -1,0 +1,65 @@
+plugins:
+  # 直连域名
+  - tag: "geosite-cn"      # 插件的 tag。由用户自由设定但不能重复。
+    type: "domain_set"     # domain_set插件，载入的域名表可供其他插件引用。插件加载后，数据只占一份内存。引用的数据是共享的，多次被引用不会消耗格外内存。
+    args:                  # 插件参数。取决于插件类型。
+      files:               # 从文本文件载入
+        - "/nestingdns/etc/site/direct-list.txt"
+        - "/nestingdns/etc/site/apple-cn.txt"
+        - "/nestingdns/etc/site/google-cn.txt"
+        - "/nestingdns/etc/site/force-cn.txt"    # 自定义国内域名
+
+  # 代理域名
+  - tag: "geosite-nocn"
+    type: "domain_set"
+    args:
+      files: 
+        - "/nestingdns/etc/site/proxy-list.txt"
+        - "/nestingdns/etc/site/gfw.txt"
+        - "/nestingdns/etc/site/greatfire.txt"
+        - "/nestingdns/etc/site/force-nocn.txt"  # 自定义代理域名
+
+  # 局域网域名
+  - tag: "geosite-private"
+    type: "domain_set"
+    args:
+      files:
+        - "/nestingdns/etc/site/private.txt" # 内网域名
+
+  # 国内 IP 段
+  - tag: "geoip-cn"
+    type: ip_set
+    args:
+      files: 
+        - "/nestingdns/etc/site/CN-ip-cidr.txt" # 国内 ip 段
+
+  # cloudflare IP 段
+  - tag: "geoip-cloudflare"
+    type: ip_set
+    args:
+      files: 
+        - "/nestingdns/etc/site/cloudflare.txt" # cloudflare ip 段
+
+  # hosts 域名映射 IP 。如果请求的域名在 hosts 内，则将应答放入请求。采用域名 + 多个 ip 方式，如 dns.google 8.8.8.8 2001:4860:4860::8888
+  - tag: "hosts-local"
+    type: "hosts"    # hosts 插件，域名映射 IP 。如果请求的域名在 hosts 内，则将应答放入请求。虽然都叫 hosts，但本插件所用的格式和平常 Win，Linux 系统内的那个 hosts 文件不一样。
+    args:
+      files:
+        - "/nestingdns/etc/site/hosts.txt"
+
+  # 缓存
+  - tag: "cache-local" # mosdns 仅做临时缓存，主要缓存由 smartdns 处理
+    type: "cache"    # 缓存 DNS 应答的插件。如果请求命中缓存，则将缓存的应答放入请求。当某一请求经过 cache 后，cache 会在这个请求处理流程结束时自动将应答放入缓存。用户无需介入。注意: 本插件是本地缓存(适用于客户端或者局域网内的缓存)。不适用于服务器端缓存。不支持扩展 DNS 协议 (即 EDNS0)，请求的 EDNS0 部分会被无视，应答的 EDNS0 会被略去。
+    args:
+      size: 1024     # 内置存缓存大小。单位: 条。默认: 1024。每个 cache 插件的内存缓存是独立的。
+      # (实验性) lazy cache 设定。lazy_cache_ttl > 0 会启用 lazy cache。
+      # 所有应答都会在缓存中存留 lazy_cache_ttl 秒，但自身的 TTL 仍然有效。如果命中过期的应答，
+      # 则缓存会立即返回 TTL 为 5 的应答，然后自动在后台发送请求更新数据。
+      # 相比强行增加应答自身的 TTL 的方法，lazy cache 能提高命中率，同时还能保持一定的数据新鲜度。
+      lazy_cache_ttl: 0      # lazy cache 生存时间。单位: 秒。默认: 0 (禁用 lazy cache)。
+      # (实验性) 将缓存保存在磁盘。插件启动时也会自动从该文件载入缓存。
+      # 缓存将在 mosdns 被关闭时保存。
+      dump_file: "/nestingdns/work/mosdns/cache.dump"
+      # (实验性) 自动保存间隔。单位秒。默认 600。
+      # 如果距离上次 dump 有 size 次更新，则自动保存。
+      dump_interval: 3600

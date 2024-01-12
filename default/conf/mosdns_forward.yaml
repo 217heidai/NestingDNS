@@ -1,0 +1,108 @@
+plugins:
+  # 转发 DNS 至 smartdns overseas 组
+  - tag: "forward_overseas"
+    type: "forward"           # forward插件，转发请求至上游服务器。获取应答后放入请求。
+    args:
+      concurrent: 1           # 并发数。每次请求会从下面配置的 upstreams 里随机选取 concurrent 个 upstreams 发送请求。取最快返回的应答。超过 3 最多选 3 个。默认 1 。
+      upstreams:
+        - tag: "overseas"          # 本上游的 tag。用于标识和 log。可省略。同一插件内该 tag 必需唯一。建议全局唯一。
+          addr: "udp://127.0.0.1:6053"      # 服务器地址。格式: [protocol://]host[:port][/path]
+  
+  # 转发 DNS 至 smartdns mainland 组
+  - tag: "forward_mainland"
+    type: "forward"
+    args:
+      concurrent: 1
+      upstreams:
+        - tag: "mainland"
+          addr: "udp://127.0.0.1:7053"
+
+  # 转发 DNS 至 smartdns gfw 组
+  - tag: "forward_gfw"
+    type: "forward"
+    args:
+      concurrent: 1
+      upstreams:
+        - tag: "gfw"
+          addr: "udp://127.0.0.1:8053"
+
+  # cloudflare IP 优选
+  - tag: "blackhole_cloudflare"
+    type: "sequence"
+    args:
+      - exec: query_summary
+      - exec: black_hole 198.41.195.151 198.41.216.205 162.159.45.46 162.159.44.160  # 生成包含特定 IP 的应答。 填入 cloudflare 优选 IP ，建议多几个不同网段的。
+      - exec: ttl 0-3600   # 修改应答的 TTL。ttl 300 将 ttl 固定在 300， ttl 300-600 限制 ttl 在 300 到 600 之间。ttl 300-0 限制 ttl 不小于 300 。
+      - exec: accept
+  
+  # IP 优选
+  - tag: "best_ip"
+    type: "sequence"
+    args:
+      - matches:
+        - "resp_ip $geoip-cloudflare"  # cloudflare 优选
+        - exec: jump $blackhole_cloudflare
+
+  - tag: "ecs_tw"
+    type: "sequence"
+    args:
+      - exec: ecs 168.95.0.0/16 2001:b000:100::/40
+  
+  - tag: "ecs_us"
+    type: "sequence"
+    args:
+      - exec: ecs 38.94.109.0/24 2602:fbdb::/40
+  
+  # 调用 forward_overseas 解析，并记录日志
+  - tag: "dns_overseas"
+    type: "sequence"     # 按顺序组合多个插件，sequence 是个可执行插件。可以被其他插件(比如服务器插件)调用。sequence 与 sequence 联动请使用自带的跳转命令 (goto, jump ...)，不要使用 exec 。
+    args:
+      - exec: query_summary
+      - exec: jump $ecs_tw
+      - exec: $forward_overseas
+      #- exec: jump $best_ip
+  
+  # 调用 forward_mainland 解析，并记录日志
+  - tag: "dns_mainland"
+    type: "sequence"
+    args:
+      - exec: query_summary
+      - exec: $forward_mainland
+      #- exec: jump $best_ip
+  
+  # 调用 forward_gfw 解析，并记录日志
+  - tag: "dns_gfw"
+    type: "sequence"
+    args:
+      - exec: query_summary
+      #- exec: jump $ecs_us
+      - exec: $forward_gfw
+      #- exec: jump $best_ip
+      - exec: ttl 0-600        # 多个代理地址切换的，设置成较小的 ttl。上游 smartdns gfw 组已关闭缓存、测速。
+
+  # fallback 的 primary
+  - tag: "primary_forward"
+    type: "sequence"
+    args:
+      - exec: jump $dns_mainland     # jump sequence_tag。将开始执行目标 sequence，目标 sequence 结束或 return 后，返回本 sequence 继续执行。目标 sequence accept/reject 后，本 sequence 和所有上级的 sequence 不再继续执行后续规则。
+      - matches:                # 匹配条件。多个匹配条件为 AND 关系。
+        - "!resp_ip $geoip-cn"
+        - "has_resp"
+        exec: drop_resp         # 如返回的 IP 不为国内地址，则抛弃。
+
+  # fallback 的 secondary
+  - tag: "secondary_forward"
+    type: "sequence"
+    args:
+      - exec: jump $dns_gfw
+      - matches:
+        - rcode 2                    # 匹配应答的 RCODE
+        exec: jump $dns_overseas     # 在 gfw 代理无法使用时，回退使用 overseas 组解析。
+
+  - tag: "final_forward"
+    type: "fallback"    # 回滚机制: 如果 primary 抛出错误，或返回但没有应答，或在 threshold 毫秒内无响应，则执行 secondary 。因无响应触发 fallback  时，如果 primary 比 secondary 先返回了应答，则依旧会采用 primary 的应答。 fallback 是多线程。primary 和 secondary 是独立的线程，它们收到的请求是 fallback 收到的请求的镜像。任何一方对请求做出修改不会影响对方，也不会影响 fallback 所在的 sequence 。如果 primary 和 secondary 是 sequence ，则它是一级/根 sequence。
+    args:
+      primary: primary_forward      # 主可执行插件的 tag
+      secondary: secondary_forward  # 副可执行插件的 tag
+      threshold: 150                # 无响应回滚阈值。单位毫秒。默认 500 。
+      always_standby: true          # secondary 会和 primary 一并执行。secondary 的结果将会在需要回滚时，立刻被采用。

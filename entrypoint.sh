@@ -1,5 +1,37 @@
 #!/bin/sh
 
+function init_dir(){
+    dir = $1
+
+    if [ ! -d $dir ]; then
+        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init dir: '`$dir`
+        mkdir -p $dir
+    fi
+}
+
+function init_file_conf(){
+    filename = $1
+
+    if [ ! -f /nestingdns/etc/conf/$filename ]; then
+        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init conf file: '`$filename`
+        cp /nestingdns/default/conf/$filename /nestingdns/etc/conf/
+    fi
+}
+
+function init_file_site(){
+    filename = $1
+
+    if [ ! -f /nestingdns/etc/site/$filename ]; then
+        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init site file: '`$filename`
+        if [ -f /nestingdns/default/site/$filename ]; then
+            cp /nestingdns/default/site/$filename /nestingdns/etc/site/
+        else
+            touch /nestingdns/etc/site/$filename
+        fi
+    fi
+}
+
+
 echo  "========================================================"
 echo  " _   _           _   _             _____  _   _  _____ "
 echo  "| \ | |         | | (_)           |  __ \| \ | |/ ____|"
@@ -11,105 +43,71 @@ echo  "                              __/ |                    "
 echo  "                             |___/                     "
 echo  "========================================================"
 
+
 # /nestingdns/etc/conf 初始化
-if [ ! -d /nestingdns/etc/conf ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: conf dir'
-    mkdir -p /nestingdns/etc/conf
-fi
-if [ ! -f /nestingdns/etc/conf/smartdns.conf ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: smartdns config file'
-    cp /nestingdns/default/conf/smartdns.conf /nestingdns/etc/conf/
-fi
-if [ ! -f /nestingdns/etc/conf/mosdns.yaml ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: mosdns config file'
-    cp /nestingdns/default/conf/mosdns.yaml /nestingdns/etc/conf/
-fi
-if [ ! -f /nestingdns/etc/conf/adguardhome.yaml ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: adguardhome config file'
-    cp /nestingdns/default/conf/adguardhome.yaml /nestingdns/etc/conf/
-fi
+init_dir /nestingdns/etc/conf
+init_file_conf smartdns.conf
+init_file_conf mosdns.yaml
+init_file_conf mosdns_load_rules.yaml
+init_file_conf mosdns_forward.yaml
+init_file_conf adguardhome.yaml
+
+
 # /nestingdns/etc/site 初始化
-if [ ! -d /nestingdns/etc/site ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: site dir'
-    mkdir -p /nestingdns/etc/site
-fi
-if [ ! -f /nestingdns/etc/site/apple-cn.txt ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: apple-cn site file'
-    cp /nestingdns/default/site/apple-cn.txt /nestingdns/etc/site/
-fi
-if [ ! -f /nestingdns/etc/site/CN-ip-cidr.txt ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: CN-ip-cidr site file'
-    cp /nestingdns/default/site/CN-ip-cidr.txt /nestingdns/etc/site/
-fi
-if [ ! -f /nestingdns/etc/site/direct-list.txt ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: direct-list site file'
-    cp /nestingdns/default/site/direct-list.txt /nestingdns/etc/site/
-fi
-if [ ! -f /nestingdns/etc/site/gfw.txt ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: gfw site file'
-    cp /nestingdns/default/site/gfw.txt /nestingdns/etc/site/
-fi
-if [ ! -f /nestingdns/etc/site/google-cn.txt ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: google-cn site file'
-    cp /nestingdns/default/site/google-cn.txt /nestingdns/etc/site/
-fi
-if [ ! -f /nestingdns/etc/site/proxy-list.txt ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: proxy-list site file'
-    cp /nestingdns/default/site/proxy-list.txt /nestingdns/etc/site/
-fi
-if [ ! -f /nestingdns/etc/site/force-cn.txt ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: force-cn site file'
-    touch /nestingdns/etc/site/force-cn.txt
-fi
-if [ ! -f /nestingdns/etc/site/force-nocn.txt ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: force-nocn site file'
-    touch /nestingdns/etc/site/force-nocn.txt
-fi
-if [ ! -f /nestingdns/etc/site/hosts.txt ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: hosts site file'
-    touch /nestingdns/etc/site/hosts.txt
-fi
+init_dir /nestingdns/etc/site
+init_file_site direct-list.txt
+init_file_site apple-cn.txt
+init_file_site google-cn.txt
+init_file_site force-cn.txt
+
+init_file_site proxy-list.txt
+init_file_site gfw.txt
+init_file_site greatfire.txt
+init_file_site force-nocn.txt
+
+init_file_site private.txt
+
+init_file_site CN-ip-cidr.txt
+
+init_file_site cloudflare.txt
+
+init_file_site hosts.txt
+
+
 # /nestingdns/work 初始化
-if [ ! -d /nestingdns/work/smartdns ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: smartdns work dir'
-    mkdir -p /nestingdns/work/smartdns
-fi
-#if [ ! -f /nestingdns/work/smartdns/cache.dump ]; then
-#    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: smartdns cache file'
-#    cp /nestingdns/default/cache/cache.dump /nestingdns/work/smartdns/
-#fi
-if [ ! -d /nestingdns/work/mosdns ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: mosdns work dir'
-    mkdir -p /nestingdns/work/mosdns
-fi
+init_dir /nestingdns/work/smartdns
+init_dir /nestingdns/work/mosdns
 if [ ! -f /nestingdns/work/mosdns/cache.dump ]; then
     echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: mosdns cache file'
     cp /nestingdns/default/cache/cache.dump /nestingdns/work/mosdns/
 fi
-if [ ! -d /nestingdns/work/adguardhome ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: adguardhome work dir'
-    mkdir -p /nestingdns/work/adguardhome
-fi
+init_dir /nestingdns/work/adguardhome
+
 
 # 设置时区及定时任务
-if [ -d /nestingdns/default ]; then
+if [ -f /nestingdns/default/init ]; then
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
 	echo $TZ > /etc/timezone
     echo "$SCHEDULE /nestingdns/bin/update.sh >> /nestingdns/log/update.log 2>&1 &" >> /var/spool/cron/crontabs/root
-    rm -rf /nestingdns/default
+    rm -rf /nestingdns/default/init
 fi
 
+
 # 启动应用
+# 启动 smartdns
 echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start smartdns'
+echo `/nestingdns/bin/smartdns -v`
 nohup /nestingdns/bin/smartdns -f -x -c /nestingdns/etc/conf/smartdns.conf > /dev/null 2>&1 &
-#nohup /nestingdns/bin/smartdns -f -x -c /nestingdns/etc/conf/smartdns.conf > /nestingdns/log/run_smartdns.log 2>&1 &
 
+# 启动 mosdns
 echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start mosdns'
+echo 'mosdns '`/nestingdns/bin/mosdns version`
 nohup /nestingdns/bin/mosdns start -c /nestingdns/etc/conf/mosdns.yaml -d /nestingdns/work/mosdns > /dev/null 2>&1 &
-#nohup /nestingdns/bin/mosdns start -c /nestingdns/etc/conf/mosdns.yaml -d /nestingdns/work/mosdns > /nestingdns/log/run_mosdns.log 2>&1 &
 
-# 启动定时任务
+# 启动定时任务 crond，定时任务包含重启mosdns，放在 mosdns 后启动
 crond
 
+# 启动 adguardhome
 echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start adguardhome'
+echo `/nestingdns/bin/adguardhome --version`
 /nestingdns/bin/adguardhome --no-check-update -c /nestingdns/etc/conf/adguardhome.yaml -w /nestingdns/work/adguardhome

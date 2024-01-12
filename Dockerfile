@@ -29,12 +29,15 @@ COPY default /nestingdns/default
 
 # 下载 site 文件
 RUN mkdir -p /nestingdns/default/site  && \
-    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt > /nestingdns/default/site/apple-cn.txt  && \
-    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Hackl0us/GeoIP2-CN/release/CN-ip-cidr.txt > /nestingdns/default/site/CN-ip-cidr.txt  && \
-    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt > /nestingdns/default/site/direct-list.txt  && \
-    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt > /nestingdns/default/site/gfw.txt  && \
-    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt > /nestingdns/default/site/google-cn.txt  && \
-    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt > /nestingdns/default/site/proxy-list.txt
+    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt > /nestingdns/default/site/direct-list.txt && \
+    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt > /nestingdns/default/site/apple-cn.txt && \
+    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt > /nestingdns/default/site/google-cn.txt && \
+    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt > /nestingdns/default/site/proxy-list.txt && \
+    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt > /nestingdns/default/site/gfw.txt && \
+    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/greatfire.txt > /nestingdns/default/site/greatfire.txt && \
+    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/domain-list-custom/release/private.txt > /nestingdns/default/site/private.txt && \
+    curl https://mirror.ghproxy.com/https://raw.githubusercontent.com/Hackl0us/GeoIP2-CN/release/CN-ip-cidr.txt > /nestingdns/default/site/CN-ip-cidr.txt && \
+    curl https://www.cloudflare-cn.com/ips-v4/# > /nestingdns/default/site/cloudflare.txt
 
 # 拷入可执行文件
 COPY --from=smartdns-builder /usr/sbin/smartdns /nestingdns/bin/smartdns
