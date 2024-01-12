@@ -40,27 +40,27 @@ plugins:
     type: "sequence"
     args:
       - matches: 
-        - resp_ip $geoip-cloudflare  # cloudflare 优选
-        exec: jump $blackhole_cloudflare
+        - "resp_ip $geoip-cloudflare"  # cloudflare 优选
+        exec: jump blackhole_cloudflare
 
   - tag: "ecs_tw"
     type: "sequence"
     args:
-      - exec: ecs 168.95.0.0/16
+      - exec: ecs 168.95.0.0
   
   - tag: "ecs_us"
     type: "sequence"
     args:
-      - exec: ecs 38.94.109.0/24
+      - exec: ecs 38.94.109.0
   
   # 调用 forward_overseas 解析，并记录日志
   - tag: "dns_overseas"
     type: "sequence"     # 按顺序组合多个插件，sequence 是个可执行插件。可以被其他插件(比如服务器插件)调用。sequence 与 sequence 联动请使用自带的跳转命令 (goto, jump ...)，不要使用 exec 。
     args:
       - exec: query_summary
-      - exec: jump $ecs_tw
+      - exec: jump ecs_tw
       - exec: $forward_overseas
-      #- exec: jump $best_ip
+      #- exec: jump best_ip
   
   # 调用 forward_mainland 解析，并记录日志
   - tag: "dns_mainland"
@@ -68,36 +68,36 @@ plugins:
     args:
       - exec: query_summary
       - exec: $forward_mainland
-      #- exec: jump $best_ip
+      #- exec: jump best_ip
   
   # 调用 forward_gfw 解析，并记录日志
   - tag: "dns_gfw"
     type: "sequence"
     args:
       - exec: query_summary
-      #- exec: jump $ecs_us
+      #- exec: jump ecs_us
       - exec: $forward_gfw
-      #- exec: jump $best_ip
+      #- exec: jump best_ip
       - exec: ttl 0-600        # 多个代理地址切换的，设置成较小的 ttl。上游 smartdns gfw 组已关闭缓存、测速。
 
   # fallback 的 primary
   - tag: "primary_forward"
     type: "sequence"
     args:
-      - exec: jump $dns_mainland     # jump sequence_tag。将开始执行目标 sequence，目标 sequence 结束或 return 后，返回本 sequence 继续执行。目标 sequence accept/reject 后，本 sequence 和所有上级的 sequence 不再继续执行后续规则。
+      - exec: jump dns_mainland     # jump sequence_tag。将开始执行目标 sequence，目标 sequence 结束或 return 后，返回本 sequence 继续执行。目标 sequence accept/reject 后，本 sequence 和所有上级的 sequence 不再继续执行后续规则。
       - matches:                # 匹配条件。多个匹配条件为 AND 关系。
-        - !resp_ip $geoip-cn
-        - has_resp
+        - "!resp_ip $geoip-cn"
+        - "has_resp"
         exec: drop_resp         # 如返回的 IP 不为国内地址，则抛弃。
 
   # fallback 的 secondary
   - tag: "secondary_forward"
     type: "sequence"
     args:
-      - exec: jump $dns_gfw
+      - exec: jump dns_gfw
       - matches:
         - rcode 2                    # 匹配应答的 RCODE
-        exec: jump $dns_overseas     # 在 gfw 代理无法使用时，回退使用 overseas 组解析。
+        exec: jump dns_overseas     # 在 gfw 代理无法使用时，回退使用 overseas 组解析。
 
   - tag: "final_forward"
     type: "fallback"    # 回滚机制: 如果 primary 抛出错误，或返回但没有应答，或在 threshold 毫秒内无响应，则执行 secondary 。因无响应触发 fallback  时，如果 primary 比 secondary 先返回了应答，则依旧会采用 primary 的应答。 fallback 是多线程。primary 和 secondary 是独立的线程，它们收到的请求是 fallback 收到的请求的镜像。任何一方对请求做出修改不会影响对方，也不会影响 fallback 所在的 sequence 。如果 primary 和 secondary 是 sequence ，则它是一级/根 sequence。

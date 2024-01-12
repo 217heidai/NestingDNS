@@ -47,33 +47,33 @@ plugins:
     args:
       - matches:
         - qtype 65
-        exec: jump $match_qtype65        # 屏蔽 QTYPE 65
+        exec: jump match_qtype65        # 屏蔽 QTYPE 65
 
       - matches:
         - qname $geosite-private "ip6-localhost" "ip6-loopback"
-        exec: jump $match_private        # 屏蔽内网域名
+        exec: jump match_private        # 屏蔽内网域名
       
       - exec: $hosts-local
       - matches: has_wanted_ans     # 如果有期望的 ANSWER，返回 true 。"期望的ANSWER "指应答的 ANSWER 中包含和 QUESTOIN 类型相同的 record。比如请求 A 记录，应答里返回了 A 记录，则该判断为 true。请求 AAAA 记录，虽然返回了SUCCESS 应答但无 AAAA 记录，返回 false 。
-        exec: jump $match_hosts
+        exec: jump match_hosts
 
       - exec: $cache-local
       - matches: has_wanted_ans
-        exec: jump $match_cache
+        exec: jump match_cache
 
       - exec: prefer_ipv4     #  优先使用 IPv4
 
       # mainland 域名解析
       - matches:
         - qname $geosite-cn
-        exec: jump $dns_mainland
+        exec: jump dns_mainland
       - matches: has_wanted_ans
         exec: accept
       
       # gfw 域名解析
       - matches:
         - qname $geosite-nocn
-        exec: jump $dns_gfw
+        exec: jump dns_gfw
       - matches: has_wanted_ans
         exec: accept
       
