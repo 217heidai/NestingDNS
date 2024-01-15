@@ -1,0 +1,43 @@
+name: Check Update
+on:
+  schedule:
+    - cron: 0 23 * * *
+
+jobs:
+  Check_Update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get Docker ImageID
+        id: getdockerimageid
+        run: |
+          docker pull pymumu/smartdns:latest
+          docker pull irinesistiana/mosdns:latest
+          docker pull adguard/adguardhome:latest
+          id_smartdns=$(docker images | grep pymumu/smartdns | awk '{print $3}')
+          id_mosdns=$(docker images | grep irinesistiana/mosdns | awk '{print $3}')
+          id_adguardhome=$(docker images | grep adguard/adguardhome | awk '{print $3}')
+          echo "imageid=$id_smartdns-$id_mosdns-$id_adguardhome" >> $GITHUB_OUTPUT
+
+      - name: Get Cache ImageID
+        id: getcacheimageid
+        uses: actions/cache@v3
+        with:
+          path: .dockerimageid
+          key: ${{ steps.getdockerimageid.outputs.imageid }}
+
+      - name: Save New ImageID
+        if: steps.getcacheimageid.outputs.cache-hit != 'true'
+        run: echo ${{ steps.getdockerimageid.outputs.imageid }} | tee .dockerimageid
+
+      - name: Create a Repository Dispatch Event
+        if: steps.getcacheimageid.outputs.cache-hit != 'true'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: on-update
+          
+      - name: Delete Workflow Runs
+        uses: GitRML/delete-workflow-runs@main
+        with:
+          retain_days: 30
+          keep_minimum_runs: 10

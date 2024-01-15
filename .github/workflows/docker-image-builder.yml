@@ -2,6 +2,8 @@ name: Docker Image Builder
 on:
   push:
     branches: [ main ]
+  repository_dispatch:
+    types: [on-update]
 
 jobs:
   Docker_Image_Builder:
