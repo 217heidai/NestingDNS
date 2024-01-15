@@ -14,8 +14,8 @@ DNS 三大神器 [AdGuardHome](https://github.com/AdguardTeam/AdGuardHome)、[Mo
 3. SmartDNS 为第三层 DNS，监听端口 6053、7053、8053
 - 负责 DNS 解析、测速、缓存。
     - mainland 组，端口 7053，通过 DoT 接入上游 AliDNS、DNSPod、360DNS，负责直连域名解析。
-    - gfw 组，端口 8053，通过代理使用 DoH 接入上游 Google、Cloudflare、Quad9，负责代理域名解析。
-    - overseas 组，端口 6053，通过 DoT 接入上游 Google、Cloudflare、Quad9、Quad101、DNS.SB、NextDNS，作为备用域名解析。
+    - gfw 组，端口 8053，通过代理使用 DoH 接入上游 Google、Cloudflare、Quad9，负责代理域名解析，关闭缓存、测速。
+    - overseas 组，端口 6053，通过 DoT 接入上游 Google、Cloudflare、Quad9、Quad101、DNS.SB、NextDNS，作为备用域名解析，关闭缓存、测速。
 
 ![NestingDNS](docs/NestingDNS.png)
 
@@ -60,6 +60,7 @@ docker run -d \
 ```
 
 # 配置说明
+***默认已全部关闭 IPv6 支持。***
 ## AdGuardHome
 AdGuardHome 配置文件为 `$HOME/nestingdns/etc/conf/adguardhome.yaml`。
 - ***默认已配置好，一般无需调整***。
