@@ -1,5 +1,6 @@
 name: Docker Image Builder
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
   repository_dispatch:
