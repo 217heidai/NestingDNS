@@ -61,6 +61,7 @@ plugins:
       - exec: jump ecs_tw
       - exec: $forward_overseas
       #- exec: jump best_ip
+      - exec: ttl 0-300        # 设置成较小的 ttl。上游 smartdns overseas 组作为备用通道，已关闭缓存、测速，仅当 smartdns gfw 组异常时使用。
   
   # 调用 forward_mainland 解析，并记录日志
   - tag: "dns_mainland"
