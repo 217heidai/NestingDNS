@@ -5,19 +5,23 @@ function update_site(){
     url=$2
 
     echo `date "+%Y/%m/%d %H.%M.%S"`' [info] update site file: '${filename}
-    curl ${url} > /tmp/nestingdns/${filename}
+    curl -s ${url} > /tmp/nestingdns/${filename}
 
     if [ -f /tmp/nestingdns/${filename} ]; then
-        if [ -f /nestingdns/etc/site/${filename} ]; then
-            rm -rf /nestingdns/etc/site/${filename}
+        mini=2
+        line=$(awk 'END{print NR}' /tmp/nestingdns/${filename})  # 获取文件行数，下载不到不更新
+
+        if [ ${line} -ge ${mini} ]; then
+            if [ -f /nestingdns/etc/site/${filename} ]; then
+                rm -rf /nestingdns/etc/site/${filename}
+            fi
+            mv /tmp/nestingdns/${filename} /nestingdns/etc/site/
         fi
-        mv /tmp/nestingdns/${filename} /nestingdns/etc/site/
     fi
 }
 
 
 # 清空日志文件
-rm -rf /nestingdns/log/update.log
 rm -rf /nestingdns/log/*.gz
 # 准备下载路径
 if [ -d /tmp/nestingdns ]; then
@@ -38,13 +42,13 @@ update_site greatfire.txt https://mirror.ghproxy.com/https://raw.githubuserconte
 
 update_site private.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/domain-list-custom/release/private.txt
 
-update_site CN-ip-cidr.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/CN-ip-cidr.txt
+update_site CN-ip-cidr.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Hackl0us/GeoIP2-CN/release/CN-ip-cidr.txt
 
 update_site cloudflare.txt https://www.cloudflare-cn.com/ips-v4/#
 
 
 # 重启 mosdns
-echo `date "+%Y/%m/%d %H.%M.%S"`' [info] restart mosdns'
+echo `date "+%Y/%m/%d %H.%M.%S"`' [info] restart mosdns: '`/nestingdns/bin/mosdns version`
 pkill -f /nestingdns/bin/mosdns
 rm -rf /nestingdns/log/mosdns.log
 nohup /nestingdns/bin/mosdns start -c /nestingdns/etc/conf/mosdns.yaml -d /nestingdns/work/mosdns > /dev/null 2>&1 &

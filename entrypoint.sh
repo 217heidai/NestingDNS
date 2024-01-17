@@ -95,19 +95,16 @@ fi
 
 # 启动应用
 # 启动 smartdns
-echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start smartdns'
-echo `/nestingdns/bin/smartdns -v` | sed 's/smartdns /version: v/'
+echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start smartdns: '`/nestingdns/bin/smartdns -v` | sed 's/smartdns /v/'
 nohup /nestingdns/bin/smartdns -f -x -c /nestingdns/etc/conf/smartdns.conf > /dev/null 2>&1 &
 
 # 启动 mosdns
-echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start mosdns'
-echo 'version: '`/nestingdns/bin/mosdns version`
+echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start mosdns: '`/nestingdns/bin/mosdns version`
 nohup /nestingdns/bin/mosdns start -c /nestingdns/etc/conf/mosdns.yaml -d /nestingdns/work/mosdns > /dev/null 2>&1 &
 
 # 启动定时任务 crond，定时任务包含重启mosdns，放在 mosdns 后启动
 crond
 
 # 启动 adguardhome
-echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start adguardhome'
-echo `/nestingdns/bin/adguardhome --version` | sed 's/AdGuard Home, version/version:/'
+echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start adguardhome: '`/nestingdns/bin/adguardhome --version` | sed 's/AdGuard Home, version //'
 /nestingdns/bin/adguardhome --no-check-update -c /nestingdns/etc/conf/adguardhome.yaml -w /nestingdns/work/adguardhome
