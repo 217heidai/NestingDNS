@@ -48,18 +48,18 @@ plugins:
         - "/nestingdns/etc/site/hosts.txt"
 
   # 缓存
-  - tag: "cache-local" # mosdns 仅做临时缓存，主要缓存由 smartdns 处理
-    type: "cache"    # 缓存 DNS 应答的插件。如果请求命中缓存，则将缓存的应答放入请求。当某一请求经过 cache 后，cache 会在这个请求处理流程结束时自动将应答放入缓存。用户无需介入。注意: 本插件是本地缓存(适用于客户端或者局域网内的缓存)。不适用于服务器端缓存。不支持扩展 DNS 协议 (即 EDNS0)，请求的 EDNS0 部分会被无视，应答的 EDNS0 会被略去。
-    args:
-      size: 1024     # 内置存缓存大小。单位: 条。默认: 1024。每个 cache 插件的内存缓存是独立的。
-      # (实验性) lazy cache 设定。lazy_cache_ttl > 0 会启用 lazy cache。
-      # 所有应答都会在缓存中存留 lazy_cache_ttl 秒，但自身的 TTL 仍然有效。如果命中过期的应答，
-      # 则缓存会立即返回 TTL 为 5 的应答，然后自动在后台发送请求更新数据。
-      # 相比强行增加应答自身的 TTL 的方法，lazy cache 能提高命中率，同时还能保持一定的数据新鲜度。
-      lazy_cache_ttl: 0      # lazy cache 生存时间。单位: 秒。默认: 0 (禁用 lazy cache)。
-      # (实验性) 将缓存保存在磁盘。插件启动时也会自动从该文件载入缓存。
-      # 缓存将在 mosdns 被关闭时保存。
-      dump_file: "/nestingdns/work/mosdns/cache.dump"
-      # (实验性) 自动保存间隔。单位秒。默认 600。
-      # 如果距离上次 dump 有 size 次更新，则自动保存。
-      dump_interval: 3600
+  #- tag: "cache-local" # mosdns 仅做临时缓存，主要缓存由 smartdns 处理
+  #  type: "cache"    # 缓存 DNS 应答的插件。如果请求命中缓存，则将缓存的应答放入请求。当某一请求经过 cache 后，cache 会在这个请求处理流程结束时自动将应答放入缓存。用户无需介入。注意: 本插件是本地缓存(适用于客户端或者局域网内的缓存)。不适用于服务器端缓存。不支持扩展 DNS 协议 (即 EDNS0)，请求的 EDNS0 部分会被无视，应答的 EDNS0 会被略去。
+  #  args:
+  #    size: 1024     # 内置存缓存大小。单位: 条。默认: 1024。每个 cache 插件的内存缓存是独立的。
+  #    # (实验性) lazy cache 设定。lazy_cache_ttl > 0 会启用 lazy cache。
+  #    # 所有应答都会在缓存中存留 lazy_cache_ttl 秒，但自身的 TTL 仍然有效。如果命中过期的应答，
+  #    # 则缓存会立即返回 TTL 为 5 的应答，然后自动在后台发送请求更新数据。
+  #    # 相比强行增加应答自身的 TTL 的方法，lazy cache 能提高命中率，同时还能保持一定的数据新鲜度。
+  #    lazy_cache_ttl: 0      # lazy cache 生存时间。单位: 秒。默认: 0 (禁用 lazy cache)。
+  #    # (实验性) 将缓存保存在磁盘。插件启动时也会自动从该文件载入缓存。
+  #    # 缓存将在 mosdns 被关闭时保存。
+  #    dump_file: "/nestingdns/work/mosdns/cache.dump"
+  #    # (实验性) 自动保存间隔。单位秒。默认 600。
+  #    # 如果距离上次 dump 有 size 次更新，则自动保存。
+  #    dump_interval: 3600

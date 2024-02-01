@@ -36,11 +36,11 @@ plugins:
       - exec: query_summary
       - exec: accept
   
-  - tag: "match_cache"
-    type: "sequence"
-    args:
-      - exec: query_summary
-      - exec: accept
+  #- tag: "match_cache"
+  #  type: "sequence"
+  #  args:
+  #    - exec: query_summary
+  #    - exec: accept
   
   - tag: "main_sequence"
     type: "sequence"
