@@ -31,8 +31,7 @@ dns:
     - 1.12.12.12
     - 120.53.53.53
   fallback_dns: []
-  all_servers: false
-  fastest_addr: false
+  upstream_mode: parallel
   fastest_timeout: 1s
   allowed_clients: []
   disallowed_clients: []
@@ -171,4 +170,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 27
+schema_version: 28
