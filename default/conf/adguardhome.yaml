@@ -31,7 +31,7 @@ dns:
     - 1.12.12.12
     - 120.53.53.53
   fallback_dns: []
-  upstream_mode: parallel
+  upstream_mode: load_balance
   fastest_timeout: 1s
   allowed_clients: []
   disallowed_clients: []
@@ -67,6 +67,7 @@ dns:
   serve_http3: false
   use_http3_upstreams: false
   serve_plain_dns: true
+  hostsfile_enabled: false
 tls:
   enabled: false
   server_name: ""
@@ -83,12 +84,14 @@ tls:
   private_key_path: ""
   strict_sni_check: false
 querylog:
+  dir_path: ""
   ignored: []
   interval: 24h
   size_memory: 1000
   enabled: true
   file_enabled: true
 statistics:
+  dir_path: ""
   ignored: []
   interval: 24h
   enabled: true
