@@ -49,6 +49,8 @@ update_site cloudflare.txt https://www.cloudflare-cn.com/ips-v4/#
 # 修正 private.txt 中 msftconnecttest.com、msftncsi.com 域名拦截，导致 windows 系统网络图标，显示网络不可用
 sed -i "/domain:msftncsi.com/d" /nestingdns/etc/site/private.txt
 sed -i "/domain:msftconnecttest.com/d" /nestingdns/etc/site/private.txt
+# 修正 private.txt 中 captive.apple.com 域名拦截，导致 ios 设备显示网络不可用
+sed -i "/domain:captive.apple.com/d" /nestingdns/etc/site/private.txt
 
 # 重启 mosdns
 echo `date "+%Y/%m/%d %H.%M.%S"`' [info] restart mosdns: '`/nestingdns/bin/mosdns version`

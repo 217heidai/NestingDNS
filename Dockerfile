@@ -42,6 +42,8 @@ RUN mkdir -p /nestingdns/default/site  && \
 # 修正 private.txt 中 msftconnecttest.com、msftncsi.com 域名拦截，导致 windows 系统网络图标，显示网络不可用
 RUN sed -i "/domain:msftncsi.com/d" /nestingdns/default/site/private.txt
 RUN sed -i "/domain:msftconnecttest.com/d" /nestingdns/default/site/private.txt
+# 修正 private.txt 中 captive.apple.com 域名拦截，导致 ios 设备显示网络不可用
+RUN sed -i "/domain:captive.apple.com/d" /nestingdns/default/site/private.txt
 
 # 拷入可执行文件
 COPY --from=smartdns-builder /usr/sbin/smartdns /nestingdns/bin/smartdns
