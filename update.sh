@@ -4,7 +4,7 @@ function update_site(){
     filename=$1
     url=$2
 
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] update site file: '${filename}
+    echo `date "+%Y/%m/%d %H:%M:%S"`' [info] update site file: '${filename}
     curl -s ${url} > /tmp/nestingdns/${filename}
 
     if [ -f /tmp/nestingdns/${filename} ]; then
@@ -23,6 +23,7 @@ function update_site(){
 
 # 清空日志文件
 rm -rf /nestingdns/log/*.gz
+rm -rf /nestingdns/log/querylog.json.1
 # 准备下载路径
 if [ -d /tmp/nestingdns ]; then
     rm -rf /tmp/nestingdns
@@ -31,7 +32,7 @@ mkdir -p /tmp/nestingdns
 
 
 # site 文件下载
-echo `date "+%Y/%m/%d %H.%M.%S"`' [info] update site file'
+echo `date "+%Y/%m/%d %H:%M:%S"`' [info] update site file'
 update_site direct-list.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt
 update_site apple-cn.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt
 update_site google-cn.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt
@@ -53,7 +54,7 @@ sed -i "/domain:msftconnecttest.com/d" /nestingdns/etc/site/private.txt
 sed -i "/domain:captive.apple.com/d" /nestingdns/etc/site/private.txt
 
 # 重启 mosdns
-echo `date "+%Y/%m/%d %H.%M.%S"`' [info] restart mosdns: '`/nestingdns/bin/mosdns version`
+echo `date "+%Y/%m/%d %H:%M:%S"`' [info] restart mosdns: '`/nestingdns/bin/mosdns version`
 pkill -f /nestingdns/bin/mosdns
 rm -rf /nestingdns/log/mosdns.log
 nohup /nestingdns/bin/mosdns start -c /nestingdns/etc/conf/mosdns.yaml -d /nestingdns/work/mosdns > /dev/null 2>&1 &

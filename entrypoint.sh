@@ -4,7 +4,7 @@ function init_dir(){
     dir=$1
 
     if [ ! -d ${dir} ]; then
-        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init dir: '${dir}
+        echo `date "+%Y/%m/%d %H:%M:%S"`' [info] init dir: '${dir}
         mkdir -p ${dir}
     fi
 }
@@ -13,7 +13,7 @@ function init_file_conf(){
     filename=$1
 
     if [ ! -f /nestingdns/etc/conf/${filename} ]; then
-        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init conf file: '${filename}
+        echo `date "+%Y/%m/%d %H:%M:%S"`' [info] init conf file: '${filename}
         cp /nestingdns/default/conf/${filename} /nestingdns/etc/conf/
     fi
 }
@@ -22,7 +22,7 @@ function init_file_site(){
     filename=$1
 
     if [ ! -f /nestingdns/etc/site/${filename} ]; then
-        echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init site file: '${filename}
+        echo `date "+%Y/%m/%d %H:%M:%S"`' [info] init site file: '${filename}
         if [ -f /nestingdns/default/site/${filename} ]; then
             cp /nestingdns/default/site/${filename} /nestingdns/etc/site/
         else
@@ -78,7 +78,7 @@ init_file_site hosts.txt
 init_dir /nestingdns/work/smartdns
 init_dir /nestingdns/work/mosdns
 if [ ! -f /nestingdns/work/mosdns/cache.dump ]; then
-    echo `date "+%Y/%m/%d %H.%M.%S"`' [info] init: mosdns cache file'
+    echo `date "+%Y/%m/%d %H:%M:%S"`' [info] init: mosdns cache file'
     cp /nestingdns/default/cache/cache.dump /nestingdns/work/mosdns/
 fi
 init_dir /nestingdns/work/adguardhome
@@ -95,16 +95,16 @@ fi
 
 # 启动应用
 # 启动 smartdns
-echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start smartdns: '`/nestingdns/bin/smartdns -v` | sed 's/smartdns /v/'
+echo `date "+%Y/%m/%d %H:%M:%S"`' [info] start smartdns: '`/nestingdns/bin/smartdns -v` | sed 's/smartdns /v/'
 nohup /nestingdns/bin/smartdns -f -x -c /nestingdns/etc/conf/smartdns.conf > /dev/null 2>&1 &
 
 # 启动 mosdns
-echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start mosdns: '`/nestingdns/bin/mosdns version`
+echo `date "+%Y/%m/%d %H:%M:%S"`' [info] start mosdns: '`/nestingdns/bin/mosdns version`
 nohup /nestingdns/bin/mosdns start -c /nestingdns/etc/conf/mosdns.yaml -d /nestingdns/work/mosdns > /dev/null 2>&1 &
 
 # 启动定时任务 crond，定时任务包含重启mosdns，放在 mosdns 后启动
 crond
 
 # 启动 adguardhome
-echo `date "+%Y/%m/%d %H.%M.%S"`' [info] start adguardhome: '`/nestingdns/bin/adguardhome --version` | sed 's/AdGuard Home, version //'
+echo `date "+%Y/%m/%d %H:%M:%S"`' [info] start adguardhome: '`/nestingdns/bin/adguardhome --version` | sed 's/AdGuard Home, version //'
 /nestingdns/bin/adguardhome --no-check-update -c /nestingdns/etc/conf/adguardhome.yaml -w /nestingdns/work/adguardhome

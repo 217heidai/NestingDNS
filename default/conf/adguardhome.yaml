@@ -84,7 +84,7 @@ tls:
   private_key_path: ""
   strict_sni_check: false
 querylog:
-  dir_path: ""
+  dir_path: "/nestingdns/log"
   ignored: []
   interval: 24h
   size_memory: 1000
