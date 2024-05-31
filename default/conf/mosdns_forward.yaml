@@ -79,7 +79,7 @@ plugins:
       #- exec: jump ecs_us
       - exec: $forward_gfw
       #- exec: jump best_ip
-      - exec: ttl 0-600        # 多个代理地址切换的，设置成较小的 ttl。上游 smartdns gfw 组已关闭缓存、测速。
+      - exec: ttl 0-300        # 多个代理地址切换的，设置成较小的 ttl。上游 smartdns gfw 组已关闭缓存、测速。
 
   # fallback 的 primary
   - tag: "primary_forward"
