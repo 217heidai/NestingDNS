@@ -12,10 +12,12 @@ function update_site(){
         line=$(awk 'END{print NR}' /tmp/nestingdns/${filename})  # 获取文件行数，下载不到不更新
 
         if [ ${line} -ge ${mini} ]; then
-            if [ -f /nestingdns/etc/site/${filename} ]; then
-                rm -rf /nestingdns/etc/site/${filename}
+            if ! grep -q "<html>" /tmp/nestingdns/${filename}; then
+                if [ -f /nestingdns/etc/site/${filename} ]; then
+                    rm -rf /nestingdns/etc/site/${filename}
+                fi
+                mv /tmp/nestingdns/${filename} /nestingdns/etc/site/
             fi
-            mv /tmp/nestingdns/${filename} /nestingdns/etc/site/
         fi
     fi
 }
