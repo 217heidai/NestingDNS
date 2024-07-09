@@ -162,7 +162,8 @@ clients:
     hosts: true
   persistent: []
 log:
-  file: ""
+  enabled: false
+  file: "/nestingdns/log/adguardhome.log"
   max_backups: 0
   max_size: 100
   max_age: 3
