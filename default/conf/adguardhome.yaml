@@ -6,7 +6,7 @@ http:
   session_ttl: 720h
 users:
   - name: root
-    password: $2a$10$7zNwhmhb34WE7JjDm1WOoOnemoWhPWQtGajAyNqTXVufQz/e0Pwn.
+    password: $2a$10$gdc7600f4bLCk5CVaiFTgeOA/eU/wZXTuvfpmg4mUSeh7fVP2rvK.
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
@@ -84,7 +84,7 @@ tls:
   private_key_path: ""
   strict_sni_check: false
 querylog:
-  dir_path: "/nestingdns/log"
+  dir_path: /nestingdns/log
   ignored: []
   interval: 24h
   size_memory: 1000
@@ -135,6 +135,7 @@ filtering:
     enabled: false
     bing: true
     duckduckgo: true
+    ecosia: true
     google: true
     pixabay: true
     yandex: true
@@ -143,6 +144,8 @@ filtering:
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
   rewrites: []
+  safe_fs_patterns:
+    - /nestingdns/work/adguardhome/userfilters/*
   safebrowsing_cache_size: 1048576
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576
@@ -162,8 +165,8 @@ clients:
     hosts: true
   persistent: []
 log:
-  enabled: false
-  file: "/nestingdns/log/adguardhome.log"
+  enabled: true
+  file: ""
   max_backups: 0
   max_size: 100
   max_age: 3
@@ -174,4 +177,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 28
+schema_version: 29
