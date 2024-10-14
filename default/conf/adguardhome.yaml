@@ -97,11 +97,11 @@ statistics:
   enabled: true
 filters:
   - enabled: true
-    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdns.txt
+    url: https://ghp.ci/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdns.txt
     name: AdBlock DNS
     id: 1
   - enabled: true
-    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockfilters.txt
+    url: https://ghp.ci/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockfilters.txt
     name: AdBlock Filter
     id: 2
 whitelist_filters: []

@@ -5,7 +5,7 @@ function update_site(){
     url=$2
 
     echo `date "+%Y/%m/%d %H:%M:%S"`' [info] update site file: '${filename}
-    curl -s ${url} > /tmp/nestingdns/${filename}
+    curl -sSL ${url} -o /tmp/nestingdns/${filename}
 
     if [ -f /tmp/nestingdns/${filename} ]; then
         mini=2
@@ -35,17 +35,17 @@ mkdir -p /tmp/nestingdns
 
 # site 文件下载
 echo `date "+%Y/%m/%d %H:%M:%S"`' [info] update site file'
-update_site direct-list.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt
-update_site apple-cn.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt
-update_site google-cn.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt
+update_site direct-list.txt https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt
+update_site apple-cn.txt https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt
+update_site google-cn.txt https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt
 
-update_site proxy-list.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt
-update_site gfw.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt
-update_site greatfire.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/greatfire.txt
+update_site proxy-list.txt https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt
+update_site gfw.txt https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt
+update_site greatfire.txt https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/greatfire.txt
 
-update_site private.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Loyalsoldier/domain-list-custom/release/private.txt
+update_site private.txt https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/domain-list-custom/release/private.txt
 
-update_site CN-ip-cidr.txt https://mirror.ghproxy.com/https://raw.githubusercontent.com/Hackl0us/GeoIP2-CN/release/CN-ip-cidr.txt
+update_site CN-ip-cidr.txt https://ghp.ci/https://raw.githubusercontent.com/Hackl0us/GeoIP2-CN/release/CN-ip-cidr.txt
 
 update_site cloudflare.txt https://www.cloudflare-cn.com/ips-v4/#
 
