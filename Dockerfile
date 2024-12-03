@@ -1,17 +1,17 @@
 # smartdns
-FROM pymumu/smartdns:latest as smartdns-builder
+FROM pymumu/smartdns:latest AS smartdns-builder
 LABEL previous-stage=smartdns-builder
 
 # mosdns
-FROM irinesistiana/mosdns:latest as mosdns-builder
+FROM irinesistiana/mosdns:latest AS mosdns-builder
 LABEL previous-stage=mosdns-builder
 
 # adguardhome
-FROM adguard/adguardhome:latest as adguardhome-builder
+FROM adguard/adguardhome:latest AS adguardhome-builder
 LABEL previous-stage=adguardhome-builder
 
 # 合并smartdns、mosdns、adguardhome
-FROM alpine:latest as nestingdns-builder
+FROM alpine:latest AS nestingdns-builder
 LABEL previous-stage=nestingdns-builder
 
 # 安装依赖，配置时区
@@ -69,7 +69,7 @@ ENV SCHEDULE="0  4  *  *  *"
 #RUN apk --no-cache add nano busybox-extras bind-tools
 
 # 安装依赖，配置时区
-RUN apk --no-cache add ca-certificates libcap tzdata curl && \
+RUN apk --no-cache add ca-certificates libcap tzdata curl tini && \
     rm -rf /var/cache/apk/*
 
 # 拷入文件
@@ -100,4 +100,4 @@ EXPOSE 6053/tcp 6053/udp \
 
 WORKDIR /nestingdns/
 VOLUME ["/nestingdns/etc/", "/nestingdns/work/", "/nestingdns/log/"]
-ENTRYPOINT ["/nestingdns/bin/entrypoint.sh"]
+ENTRYPOINT ["/sbin/tini", "--", "/nestingdns/bin/entrypoint.sh"]
