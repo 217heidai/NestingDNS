@@ -56,6 +56,9 @@ COPY --from=adguardhome-builder /opt/adguardhome/AdGuardHome /nestingdns/bin/adg
 COPY entrypoint.sh /nestingdns/bin/entrypoint.sh
 COPY update.sh /nestingdns/bin/update.sh
 
+# 添加执行权限
+RUN chmod +x /nestingdns/bin/*
+
 
 # 生成 nestingdns 镜像
 FROM alpine:latest
@@ -74,9 +77,6 @@ RUN apk --no-cache add ca-certificates libcap tzdata curl tini && \
 
 # 拷入文件
 COPY --from=nestingdns-builder /nestingdns /nestingdns
-
-# 添加执行权限
-RUN chmod +x /nestingdns/bin/*
 
 RUN setcap 'cap_net_bind_service=+eip' /nestingdns/bin/adguardhome
 
