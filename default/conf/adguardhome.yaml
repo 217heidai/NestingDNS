@@ -97,11 +97,11 @@ statistics:
   enabled: true
 filters:
   - enabled: true
-    url: https://ghp.ci/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdns.txt
+    url: https://github.boki.moe/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdns.txt
     name: AdBlock DNS
     id: 1
   - enabled: true
-    url: https://ghp.ci/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockfilters.txt
+    url: https://github.boki.moe/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockfilters.txt
     name: AdBlock Filter
     id: 2
 whitelist_filters: []

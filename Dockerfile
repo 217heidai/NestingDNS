@@ -29,14 +29,14 @@ COPY default /nestingdns/default
 
 # 下载 site 文件
 RUN mkdir -p /nestingdns/default/site  && \
-    curl -sSL https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt -o /nestingdns/default/site/direct-list.txt && \
-    curl -sSL https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt -o /nestingdns/default/site/apple-cn.txt && \
-    curl -sSL https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt -o /nestingdns/default/site/google-cn.txt && \
-    curl -sSL https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt -o /nestingdns/default/site/proxy-list.txt && \
-    curl -sSL https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt -o /nestingdns/default/site/gfw.txt && \
-    curl -sSL https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/greatfire.txt -o /nestingdns/default/site/greatfire.txt && \
-    curl -sSL https://ghp.ci/https://raw.githubusercontent.com/Loyalsoldier/domain-list-custom/release/private.txt -o /nestingdns/default/site/private.txt && \
-    curl -sSL https://ghp.ci/https://raw.githubusercontent.com/Hackl0us/GeoIP2-CN/release/CN-ip-cidr.txt -o /nestingdns/default/site/CN-ip-cidr.txt && \
+    curl -sSL https://github.boki.moe/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt -o /nestingdns/default/site/direct-list.txt && \
+    curl -sSL https://github.boki.moe/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt -o /nestingdns/default/site/apple-cn.txt && \
+    curl -sSL https://github.boki.moe/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt -o /nestingdns/default/site/google-cn.txt && \
+    curl -sSL https://github.boki.moe/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt -o /nestingdns/default/site/proxy-list.txt && \
+    curl -sSL https://github.boki.moe/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt -o /nestingdns/default/site/gfw.txt && \
+    curl -sSL https://github.boki.moe/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/greatfire.txt -o /nestingdns/default/site/greatfire.txt && \
+    curl -sSL https://github.boki.moe/https://raw.githubusercontent.com/Loyalsoldier/domain-list-custom/release/private.txt -o /nestingdns/default/site/private.txt && \
+    curl -sSL https://github.boki.moe/https://raw.githubusercontent.com/Hackl0us/GeoIP2-CN/release/CN-ip-cidr.txt -o /nestingdns/default/site/CN-ip-cidr.txt && \
     curl -sSL https://www.cloudflare-cn.com/ips-v4/# -o /nestingdns/default/site/cloudflare.txt
 
 # 修正 private.txt 中 msftconnecttest.com、msftncsi.com 域名拦截，导致 windows 系统网络图标，显示网络不可用
