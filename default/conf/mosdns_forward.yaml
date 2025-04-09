@@ -43,22 +43,28 @@ plugins:
         - "resp_ip $geoip-cloudflare"  # cloudflare 优选
         exec: jump blackhole_cloudflare
 
-  - tag: "ecs_tw"
+  - tag: "ecs_overseas"
     type: "sequence"
     args:
-      - exec: ecs 168.95.0.0
+      - exec: ecs 101.101.101.101   # 使用台湾 Quad101 DNS IP
+
+  - tag: "ecs_mainland"
+    type: "sequence"
+    args:
+      - exec: ecs 222.66.251.8      # 使用宽带拨号自动获取的运营商 DNS IP
+      #- exec: ecs 210.22.70.225
   
-  - tag: "ecs_us"
+  - tag: "ecs_gfw"
     type: "sequence"
     args:
-      - exec: ecs 38.94.109.0
+      - exec: ecs 23.95.225.2       # 使用 VPS 测试 IP
   
   # 调用 forward_overseas 解析，并记录日志
   - tag: "dns_overseas"
     type: "sequence"     # 按顺序组合多个插件，sequence 是个可执行插件。可以被其他插件(比如服务器插件)调用。sequence 与 sequence 联动请使用自带的跳转命令 (goto, jump ...)，不要使用 exec 。
     args:
       - exec: query_summary
-      - exec: jump ecs_tw
+      - exec: jump ecs_overseas
       - exec: $forward_overseas
       #- exec: jump best_ip
       - exec: ttl 0-300        # 设置成较小的 ttl。上游 smartdns overseas 组作为备用通道，已关闭缓存、测速，仅当 smartdns gfw 组异常时使用。
@@ -68,6 +74,7 @@ plugins:
     type: "sequence"
     args:
       - exec: query_summary
+      #- exec: jump ecs_mainland
       - exec: $forward_mainland
       #- exec: jump best_ip
   
@@ -76,7 +83,7 @@ plugins:
     type: "sequence"
     args:
       - exec: query_summary
-      #- exec: jump ecs_us
+      #- exec: jump ecs_gfw
       - exec: $forward_gfw
       #- exec: jump best_ip
       - exec: ttl 0-300        # 多个代理地址切换的，设置成较小的 ttl。上游 smartdns gfw 组已关闭缓存、测速。
@@ -86,10 +93,10 @@ plugins:
     type: "sequence"
     args:
       - exec: jump dns_mainland     # jump sequence_tag。将开始执行目标 sequence，目标 sequence 结束或 return 后，返回本 sequence 继续执行。目标 sequence accept/reject 后，本 sequence 和所有上级的 sequence 不再继续执行后续规则。
-      - matches:                # 匹配条件。多个匹配条件为 AND 关系。
+      - matches:                    # 匹配条件。多个匹配条件为 AND 关系。
         - "!resp_ip $geoip-cn"
         - "has_resp"
-        exec: drop_resp         # 如返回的 IP 不为国内地址，则抛弃。
+        exec: drop_resp             # 如返回的 IP 不为国内地址，则抛弃。
 
   # fallback 的 secondary
   - tag: "secondary_forward"
@@ -97,7 +104,7 @@ plugins:
     args:
       - exec: jump dns_gfw
       - matches:
-        - rcode 2                    # 匹配应答的 RCODE
+        - rcode 2                   # 匹配应答的 RCODE
         exec: jump dns_overseas     # 在 gfw 代理无法使用时，回退使用 overseas 组解析。
 
   - tag: "final_forward"
