@@ -52,8 +52,9 @@ COPY --from=smartdns-builder /usr/sbin/smartdns /nestingdns/bin/smartdns
 COPY --from=mosdns-builder /usr/bin/mosdns /nestingdns/bin/mosdns
 COPY --from=adguardhome-builder /opt/adguardhome/AdGuardHome /nestingdns/bin/adguardhome
 
-# 拷入entrypoint.sh、update.sh
+# 拷入entrypoint.sh、healthcheck.sh、update.sh
 COPY entrypoint.sh /nestingdns/bin/entrypoint.sh
+COPY healthcheck.sh /nestingdns/bin/healthcheck.sh
 COPY update.sh /nestingdns/bin/update.sh
 
 # 添加执行权限
@@ -79,6 +80,9 @@ RUN apk --no-cache add ca-certificates libcap tzdata curl tini && \
 COPY --from=nestingdns-builder /nestingdns /nestingdns
 
 RUN setcap 'cap_net_bind_service=+eip' /nestingdns/bin/adguardhome
+
+# 设置 healthcheck
+HEALTHCHECK --interval=60s --retries=1 CMD sh /nestingdns/bin/healthcheck.sh
 
 # smartdns
 # 6053   : TCP, UDP : DNS

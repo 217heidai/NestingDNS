@@ -24,7 +24,7 @@ DNS 三大神器 [AdGuardHome](https://github.com/AdguardTeam/AdGuardHome)、[Mo
 1. network host 模式（推荐使用）
 ```bash
 docker run -d \
-    --restart unless-stopped \
+    --restart on-failure:3 \
     --name nestingdns \
     --network host \
     -v $HOME/nestingdns/etc:/nestingdns/etc \    # 配置文件路径
@@ -38,7 +38,7 @@ docker run -d \
 2. 端口映射模式（MosDNS、SmartDNS 的端口可以不映射）
 ```bash
 docker run -d \
-    --restart unless-stopped \
+    --restart on-failure:3 \
     --name nestingdns \
     -p 3000:3000 \      # AdGuardHome web 页面
     -p 4053:4053 \      # AdGuardHome NDS
