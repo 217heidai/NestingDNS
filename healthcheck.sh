@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-PROCESSES="/nestingdns/bin/adguardhome /nestingdns/bin/mosdns /nestingdns/bin/smartdns"
+PROCESSES="/nestingdns/bin/adguardhome /nestingdns/bin/mosdns /nestingdns/lib/smartdns/smartdns"
 
 status=0
 

@@ -19,6 +19,7 @@ RUN apk --no-cache add curl
 
 # 创建目录
 RUN mkdir -p /nestingdns && \
+    mkdir -p /nestingdns/lib && \
     mkdir -p /nestingdns/bin && \
     mkdir -p /nestingdns/etc && \
     mkdir -p /nestingdns/work && \
@@ -48,7 +49,8 @@ RUN sed -i "/domain:captive.apple.com/d" /nestingdns/default/site/private.txt
 RUN sed -i "/domain:ping.archlinux.org/d" /nestingdns/default/site/private.txt
 
 # 拷入可执行文件
-COPY --from=smartdns-builder /usr/sbin/smartdns /nestingdns/bin/smartdns
+COPY --from=smartdns-builder /usr/local/lib/smartdns /nestingdns/lib/smartdns
+RUN ln -s /nestingdns/lib/smartdns/run-smartdns /nestingdns/bin/smartdns
 COPY --from=mosdns-builder /usr/bin/mosdns /nestingdns/bin/mosdns
 COPY --from=adguardhome-builder /opt/adguardhome/AdGuardHome /nestingdns/bin/adguardhome
 
@@ -73,7 +75,8 @@ ENV SCHEDULE="0  4  *  *  *"
 #RUN apk --no-cache add nano busybox-extras bind-tools
 
 # 安装依赖，配置时区
-RUN apk --no-cache add ca-certificates libcap tzdata curl tini && \
+RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories && \
+    apk --no-cache add ca-certificates libcap tzdata curl tini && \
     rm -rf /var/cache/apk/*
 
 # 拷入文件
