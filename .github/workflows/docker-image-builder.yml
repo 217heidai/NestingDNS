@@ -3,8 +3,6 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [on-update]
-env:
-  VERSION: $(date +"%Y%m%d")
 
 jobs:
   Docker_Image_Builder:
@@ -22,6 +20,12 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      
+      - name: Checkout
+        run: |
+          git clone https://github.com/HeidaiDai/NestingDNS.git
+          cd NestingDNS
+          echo "VERSION=$(date +"%Y%m%d")" >> $GITHUB_ENV
 
       - name: Build and push
         uses: docker/build-push-action@v6
