@@ -15,7 +15,8 @@ FROM alpine:latest AS nestingdns-builder
 LABEL previous-stage=nestingdns-builder
 
 # 安装依赖，配置时区
-RUN apk --no-cache add curl
+RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories && \
+    apk --no-cache add ca-certificates curl
 
 # 创建目录
 RUN mkdir -p /nestingdns && \
@@ -71,13 +72,13 @@ LABEL name="nestingdns"
 ENV TZ="Asia/Shanghai"
 ENV SCHEDULE="0  4  *  *  *"
 
-# 测试用
-#RUN apk --no-cache add nano busybox-extras bind-tools
-
 # 安装依赖，配置时区
 RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories && \
     apk --no-cache add ca-certificates libcap tzdata curl tini && \
     rm -rf /var/cache/apk/*
+
+# 测试用
+#RUN apk --no-cache add nano busybox-extras bind-tools
 
 # 拷入文件
 COPY --from=nestingdns-builder /nestingdns /nestingdns
