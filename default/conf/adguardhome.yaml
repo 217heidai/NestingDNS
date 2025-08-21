@@ -6,7 +6,7 @@ http:
   session_ttl: 720h
 users:
   - name: root
-    password: $2a$10$gdc7600f4bLCk5CVaiFTgeOA/eU/wZXTuvfpmg4mUSeh7fVP2rvK.
+    password: $2a$10$nhCy29HWRhHUolPVnW0GDeNixvRf9H/xgHV7KTdIl42QqRMxc7lJy
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
@@ -42,6 +42,7 @@ dns:
   trusted_proxies:
     - 127.0.0.0/8
     - ::1/128
+  cache_enabled: true
   cache_size: 4194304
   cache_ttl_min: 0
   cache_ttl_max: 0
@@ -68,6 +69,8 @@ dns:
   use_http3_upstreams: false
   serve_plain_dns: true
   hostsfile_enabled: false
+  pending_requests:
+    enabled: true
 tls:
   enabled: false
   server_name: ""
@@ -177,4 +180,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 29
+schema_version: 30
