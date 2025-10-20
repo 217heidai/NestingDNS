@@ -24,8 +24,8 @@ function update_site(){
 
 
 # 清空日志文件
-rm -rf /nestingdns/log/*.gz
-rm -rf /nestingdns/log/querylog.json.1
+#rm -rf /nestingdns/log/*.gz
+#rm -rf /nestingdns/log/querylog.json.1
 # 准备下载路径
 if [ -d /tmp/nestingdns ]; then
     rm -rf /tmp/nestingdns
