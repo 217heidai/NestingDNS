@@ -6,7 +6,7 @@ http:
   session_ttl: 720h
 users:
   - name: root
-    password: $2a$10$8ANlzRzk1lYTRa/z5Fo84OwgdtugFjwqXbkUqzaA0CNaunJj080NG
+    password: $2a$10$zPt7mNJNOLkuDjRvGktzBOdO79aIw1Zoo8IU6rAtYQI6LKvWY82VG
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
@@ -47,6 +47,8 @@ dns:
   cache_ttl_min: 0
   cache_ttl_max: 0
   cache_optimistic: false
+  cache_optimistic_answer_ttl: 30s
+  cache_optimistic_max_age: 12h
   bogus_nxdomain: []
   aaaa_disabled: true
   enable_dnssec: false
@@ -181,4 +183,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 31
+schema_version: 32
