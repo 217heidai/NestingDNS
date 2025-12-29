@@ -21,6 +21,10 @@ RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsing
 # 拷入文件
 COPY nestingdns /nestingdns
 
+# 创建目录
+RUN mkdir -p /nestingdns/default/site && \
+    mkdir -p /nestingdns/default/lib
+
 # 下载 site 文件
 RUN curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt -o /nestingdns/default/site/direct-list.txt && \
     curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt -o /nestingdns/default/site/apple-cn.txt && \
