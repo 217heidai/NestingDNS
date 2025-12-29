@@ -59,18 +59,13 @@ init_file_site direct-list.txt
 init_file_site apple-cn.txt
 init_file_site google-cn.txt
 init_file_site force-cn.txt
-
 init_file_site proxy-list.txt
 init_file_site gfw.txt
 init_file_site greatfire.txt
 init_file_site force-nocn.txt
-
 init_file_site private.txt
-
 init_file_site CN-ip-cidr.txt
-
 init_file_site cloudflare.txt
-
 init_file_site hosts.txt
 
 
@@ -85,11 +80,11 @@ init_dir /nestingdns/work/adguardhome
 
 
 # 设置时区及定时任务
-if [ -d /nestingdns/default ]; then
+if [ -f /nestingdns/default/init ]; then
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
 	echo $TZ > /etc/timezone
     echo "$SCHEDULE /nestingdns/bin/update.sh > /nestingdns/log/update.log 2>&1 &" >> /var/spool/cron/crontabs/root
-    rm -rf /nestingdns/default
+    rm -f /nestingdns/default/init
 fi
 
 

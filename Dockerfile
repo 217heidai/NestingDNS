@@ -14,24 +14,15 @@ LABEL previous-stage=adguardhome-builder
 FROM alpine:latest AS nestingdns-builder
 LABEL previous-stage=nestingdns-builder
 
-# 安装依赖，配置时区
+# 安装依赖
 RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories && \
     apk --no-cache add ca-certificates curl
 
-# 创建目录
-RUN mkdir -p /nestingdns && \
-    mkdir -p /nestingdns/lib && \
-    mkdir -p /nestingdns/bin && \
-    mkdir -p /nestingdns/etc && \
-    mkdir -p /nestingdns/work && \
-    mkdir -p /nestingdns/log
-
-# 拷入默认配置文件
-COPY default /nestingdns/default
+# 拷入文件
+COPY nestingdns /nestingdns
 
 # 下载 site 文件
-RUN mkdir -p /nestingdns/default/site  && \
-    curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt -o /nestingdns/default/site/direct-list.txt && \
+RUN curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt -o /nestingdns/default/site/direct-list.txt && \
     curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt -o /nestingdns/default/site/apple-cn.txt && \
     curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt -o /nestingdns/default/site/google-cn.txt && \
     curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt -o /nestingdns/default/site/proxy-list.txt && \
@@ -54,11 +45,6 @@ COPY --from=smartdns-builder /usr/local/lib/smartdns /nestingdns/lib/smartdns
 RUN ln -s /nestingdns/lib/smartdns/run-smartdns /nestingdns/bin/smartdns
 COPY --from=mosdns-builder /usr/bin/mosdns /nestingdns/bin/mosdns
 COPY --from=adguardhome-builder /opt/adguardhome/AdGuardHome /nestingdns/bin/adguardhome
-
-# 拷入entrypoint.sh、healthcheck.sh、update.sh
-COPY entrypoint.sh /nestingdns/bin/entrypoint.sh
-COPY healthcheck.sh /nestingdns/bin/healthcheck.sh
-COPY update.sh /nestingdns/bin/update.sh
 
 # 添加执行权限
 RUN chmod +x /nestingdns/bin/*
