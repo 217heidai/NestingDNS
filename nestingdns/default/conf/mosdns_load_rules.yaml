@@ -7,6 +7,8 @@ plugins:
         - "/nestingdns/etc/site/direct-list.txt"
         - "/nestingdns/etc/site/apple-cn.txt"
         - "/nestingdns/etc/site/google-cn.txt"
+        - "/nestingdns/etc/site/steam-cn.txt"
+        - "/nestingdns/etc/site/gamedownload-cn.txt"
         - "/nestingdns/etc/site/force-cn.txt"    # 自定义国内域名
 
   # 代理域名

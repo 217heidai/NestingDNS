@@ -49,6 +49,9 @@ update_site CN-ip-cidr.txt https://ghfast.top/https://raw.githubusercontent.com/
 
 update_site cloudflare.txt https://www.cloudflare-cn.com/ips-v4/#
 
+update_site steam-cn.txt https://ghfast.top/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/SteamCN/SteamCN.list
+update_site gamedownload-cn.txt https://ghfast.top/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Game/GameDownloadCN/GameDownloadCN.list
+
 # 修正 private.txt 中 msftconnecttest.com、msftncsi.com 域名拦截，导致 windows 系统网络图标，显示网络不可用
 sed -i "/domain:msftncsi.com/d" /nestingdns/etc/site/private.txt
 sed -i "/domain:msftconnecttest.com/d" /nestingdns/etc/site/private.txt
@@ -56,6 +59,12 @@ sed -i "/domain:msftconnecttest.com/d" /nestingdns/etc/site/private.txt
 sed -i "/domain:captive.apple.com/d" /nestingdns/etc/site/private.txt
 # 修正 private.txt 中 ping.archlinux.org 域名拦截，导致 arch 系 Linux 设备显示网络受限
 sed -i "/domain:ping.archlinux.org/d" /nestingdns/etc/site/private.txt
+# 修正 steam-cn.txt 格式
+sed -i "s/^DOMAIN,/full:/" /nestingdns/etc/site/steam-cn.txt
+sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/etc/site/steam-cn.txt
+# 修正 gamedownload-cn.txt 格式
+sed -i "s/^DOMAIN,/full:/" /nestingdns/etc/site/gamedownload-cn.txt
+sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/etc/site/gamedownload-cn.txt
 
 # 重启 mosdns
 echo `date "+%Y/%m/%d %H:%M:%S"`' [info] restart mosdns: '`/nestingdns/bin/mosdns version`

@@ -67,6 +67,8 @@ init_file_site private.txt
 init_file_site CN-ip-cidr.txt
 init_file_site cloudflare.txt
 init_file_site hosts.txt
+init_file_site steam-cn.txt
+init_file_site gamedownload-cn.txt
 
 
 # /nestingdns/work 初始化
