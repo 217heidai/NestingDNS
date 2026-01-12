@@ -23,7 +23,9 @@ COPY nestingdns /nestingdns
 
 # 创建目录
 RUN mkdir -p /nestingdns/default/site && \
-    mkdir -p /nestingdns/default/lib
+    mkdir -p /nestingdns/lib && \
+    mkdir -p /nestingdns/www
+
 
 # 下载 site 文件
 RUN curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt -o /nestingdns/default/site/direct-list.txt && \
@@ -52,7 +54,8 @@ RUN sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/default/site/steam-cn.txt
 RUN sed -i "s/^DOMAIN,/full:/" /nestingdns/default/site/gamedownload-cn.txt
 RUN sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/default/site/gamedownload-cn.txt
 
-# 拷入可执行文件
+# 拷入文件
+COPY --from=smartdns-builder /usr/share/smartdns/wwwroot /nestingdns/www/smartdns
 COPY --from=smartdns-builder /usr/local/lib/smartdns /nestingdns/lib/smartdns
 RUN ln -s /nestingdns/lib/smartdns/run-smartdns /nestingdns/bin/smartdns
 COPY --from=mosdns-builder /usr/bin/mosdns /nestingdns/bin/mosdns
@@ -70,18 +73,17 @@ LABEL name="nestingdns"
 ENV TZ="Asia/Shanghai"
 ENV SCHEDULE="0  4  *  *  *"
 
-# 安装依赖，配置时区
-RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories && \
-    apk --no-cache add ca-certificates libcap tzdata curl tini && \
-    rm -rf /var/cache/apk/*
-
-# 测试用
-#RUN apk --no-cache add nano busybox-extras bind-tools
-
 # 拷入文件
 COPY --from=nestingdns-builder /nestingdns /nestingdns
 
-RUN setcap 'cap_net_bind_service=+eip' /nestingdns/bin/adguardhome
+# 安装依赖
+RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#https://mirrors.tuna.tsinghua.edu.cn/alpine#g' /etc/apk/repositories && \
+    apk --no-cache add ca-certificates libcap tzdata curl tini && \
+    rm -rf /var/cache/apk/* && \
+    setcap 'cap_net_bind_service=+eip' /nestingdns/bin/adguardhome
+
+# 测试用
+#RUN apk --no-cache add nano busybox-extras bind-tools
 
 # 设置 healthcheck
 HEALTHCHECK --interval=60s --retries=1 CMD sh /nestingdns/bin/healthcheck.sh
@@ -90,6 +92,7 @@ HEALTHCHECK --interval=60s --retries=1 CMD sh /nestingdns/bin/healthcheck.sh
 # 6053   : TCP, UDP : DNS
 # 7053   : TCP, UDP : DNS
 # 8053   : TCP, UDP : DNS
+# 4000   : TCP, UDP : HTTP(S) (alt, incl. HTTP/3)
 # mosdns
 # 5053   : TCP, UDP : DNS
 # adguardhome
@@ -100,6 +103,7 @@ HEALTHCHECK --interval=60s --retries=1 CMD sh /nestingdns/bin/healthcheck.sh
 EXPOSE 6053/tcp 6053/udp \
        7053/tcp 7053/udp \
        8053/tcp 8053/udp \
+       4000/tcp 4000/udp \
        5053/tcp 5053/udp \
        4053/tcp 4053/udp \
        3000/tcp 3000/udp

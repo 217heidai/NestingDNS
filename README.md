@@ -45,6 +45,7 @@ docker run -d \
     -p 4053:4053/udp \  # AdGuardHome NDS
     -p 5053:5053 \      # MosDNS NDS
     -p 5053:5053/udp \  # MosDNS NDS
+    -p 4000:4000 \      # SmartDNS web 页面
     -p 6053:6053 \      # SmartDNS NDS
     -p 6053:6053/udp \  # SmartDNS NDS
     -p 7053:7053 \      # SmartDNS NDS
@@ -64,9 +65,9 @@ docker run -d \
 ## AdGuardHome
 AdGuardHome 配置文件为 `$HOME/nestingdns/etc/conf/adguardhome.yaml`。
 - ***默认已配置好，一般无需调整***。
-- 可通过 3000 端口的 web 进行配置，默认账号 root 密码 password。
 - 默认开启缓存，并关闭乐观缓存，AdGuardHome 仅作临时缓存。主要缓存功能由 SmartDNS 负责。
 - 默认内置去广告规则 [AdBlock DNS Filters](https://github.com/217heidai/adblockfilters)。
+- web 服务为 3000 端口，默认账号 root 密码 password。
 
 ## MosDNS
 MosDNS 配置文件为 `$HOME/nestingdns/etc/conf/mosdns.yaml`、`$HOME/nestingdns/etc/conf/mosdns_load_rules.yaml`、`$HOME/nestingdns/etc/conf/mosdns_forward.yaml`。
@@ -84,6 +85,7 @@ MosDNS 配置文件为 `$HOME/nestingdns/etc/conf/mosdns.yaml`、`$HOME/nestingd
 SmartDNS 配置文件为 `$HOME/nestingdns/etc/conf/smartdns.conf`。
 - **除代理外，其它默认已配置好，一般无需调整**。各项配置可参考官方 [wiki](https://pymumu.github.io/smartdns/)。
 - **使用科学上网的，请为 gfw 组配置通过代理进行 DNS 解析**，配置方式参见官方 [wiki proxy 部分](https://pymumu.github.io/smartdns/config/proxy/)。不使用科学上网的，无需配置。
+- web 服务为 4000 端口，默认账号 root 密码 password。默认未开启，配置文件放开 plugin 注释即可开启。
 
 # 测试方法
 ```
