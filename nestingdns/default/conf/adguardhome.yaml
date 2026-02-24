@@ -94,12 +94,14 @@ querylog:
   interval: 24h
   size_memory: 1000
   enabled: true
+  ignored_enabled: false
   file_enabled: true
 statistics:
   dir_path: ""
   ignored: []
   interval: 24h
   enabled: true
+  ignored_enabled: false
 filters:
   - enabled: true
     url: https://ghfast.top/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdns.txt
@@ -183,4 +185,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 32
+schema_version: 33
