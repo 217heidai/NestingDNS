@@ -64,8 +64,12 @@ sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/etc/site/steam-cn.txt
 # 修正 gamedownload-cn.txt 格式
 sed -i "s/^DOMAIN,/full:/" /nestingdns/etc/site/gamedownload-cn.txt
 sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/etc/site/gamedownload-cn.txt
-# direct-list 移除 dl.google.com
+# direct-list 移除 dl.google.com、clientservices.googleapis.com、fonts.googleapis.com、update.googleapis.com、tools.google.com
 sed -i "/full:dl.google.com/d" /nestingdns/etc/site/direct-list.txt
+sed -i "/full:clientservices.googleapis.com/d" /nestingdns/etc/site/direct-list.txt
+sed -i "/full:fonts.googleapis.com/d" /nestingdns/etc/site/direct-list.txt
+sed -i "/full:update.googleapis.com/d" /nestingdns/etc/site/direct-list.txt
+sed -i "/full:tools.google.com/d" /nestingdns/etc/site/direct-list.txt
 
 # 重启 mosdns
 echo `date "+%Y/%m/%d %H:%M:%S"`' [info] restart mosdns: '`/nestingdns/bin/mosdns version`

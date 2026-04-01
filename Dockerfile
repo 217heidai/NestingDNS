@@ -52,8 +52,12 @@ RUN sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/default/site/steam-cn.txt
 # 修正 gamedownload-cn.txt 格式
 RUN sed -i "s/^DOMAIN,/full:/" /nestingdns/default/site/gamedownload-cn.txt
 RUN sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/default/site/gamedownload-cn.txt
-# direct-list 移除 dl.google.com
+# direct-list 移除 dl.google.com、clientservices.googleapis.com、fonts.googleapis.com、update.googleapis.com、tools.google.com
 RUN sed -i "/full:dl.google.com/d" /nestingdns/default/site/direct-list.txt
+RUN sed -i "/full:clientservices.googleapis.com/d" /nestingdns/default/site/direct-list.txt
+RUN sed -i "/full:fonts.googleapis.com/d" /nestingdns/default/site/direct-list.txt
+RUN sed -i "/full:update.googleapis.com/d" /nestingdns/default/site/direct-list.txt
+RUN sed -i "/full:tools.google.com/d" /nestingdns/default/site/direct-list.txt
 
 # 拷入文件
 COPY --from=smartdns-builder /usr/share/smartdns/wwwroot /nestingdns/www/smartdns
