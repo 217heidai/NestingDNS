@@ -57,7 +57,6 @@ init_file_conf adguardhome.yaml
 init_dir /nestingdns/etc/site
 init_file_site direct-list.txt
 init_file_site apple-cn.txt
-init_file_site google-cn.txt
 init_file_site force-cn.txt
 init_file_site proxy-list.txt
 init_file_site gfw.txt

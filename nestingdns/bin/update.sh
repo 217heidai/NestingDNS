@@ -37,7 +37,6 @@ mkdir -p /tmp/nestingdns
 echo `date "+%Y/%m/%d %H:%M:%S"`' [info] update site file'
 update_site direct-list.txt https://ghfast.top/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt
 update_site apple-cn.txt https://ghfast.top/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt
-update_site google-cn.txt https://ghfast.top/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt
 
 update_site proxy-list.txt https://ghfast.top/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt
 update_site gfw.txt https://ghfast.top/https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt

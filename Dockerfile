@@ -30,7 +30,6 @@ RUN mkdir -p /nestingdns/default/site && \
 # 下载 site 文件
 RUN curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt -o /nestingdns/default/site/direct-list.txt && \
     curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt -o /nestingdns/default/site/apple-cn.txt && \
-    curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/google-cn.txt -o /nestingdns/default/site/google-cn.txt && \
     curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt -o /nestingdns/default/site/proxy-list.txt && \
     curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt -o /nestingdns/default/site/gfw.txt && \
     curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/greatfire.txt -o /nestingdns/default/site/greatfire.txt && \
