@@ -28,36 +28,11 @@ RUN mkdir -p /nestingdns/default/site && \
 
 
 # 下载 site 文件
-RUN curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/direct-list.txt -o /nestingdns/default/site/direct-list.txt && \
-    curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/apple-cn.txt -o /nestingdns/default/site/apple-cn.txt && \
-    curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt -o /nestingdns/default/site/proxy-list.txt && \
-    curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt -o /nestingdns/default/site/gfw.txt && \
-    curl -sSL https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/greatfire.txt -o /nestingdns/default/site/greatfire.txt && \
-    curl -sSL https://raw.githubusercontent.com/Loyalsoldier/domain-list-custom/release/private.txt -o /nestingdns/default/site/private.txt && \
-    curl -sSL https://raw.githubusercontent.com/Hackl0us/GeoIP2-CN/release/CN-ip-cidr.txt -o /nestingdns/default/site/CN-ip-cidr.txt && \
-    curl -sSL https://www.cloudflare-cn.com/ips-v4/# -o /nestingdns/default/site/cloudflare.txt && \
-    curl -sSL https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/SteamCN/SteamCN.list -o /nestingdns/default/site/steam-cn.txt && \
-    curl -sSL https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Game/GameDownloadCN/GameDownloadCN.list -o /nestingdns/default/site/gamedownload-cn.txt
-
-# 修正 private.txt 中 msftconnecttest.com、msftncsi.com 域名拦截，导致 windows 系统网络图标，显示网络不可用
-RUN sed -i "/domain:msftncsi.com/d" /nestingdns/default/site/private.txt
-RUN sed -i "/domain:msftconnecttest.com/d" /nestingdns/default/site/private.txt
-# 修正 private.txt 中 captive.apple.com 域名拦截，导致 ios 设备显示网络不可用
-RUN sed -i "/domain:captive.apple.com/d" /nestingdns/default/site/private.txt
-# 修正 private.txt 中 ping.archlinux.org 域名拦截，导致 arch 系 Linux 设备显示网络受限
-RUN sed -i "/domain:ping.archlinux.org/d" /nestingdns/default/site/private.txt
-# 修正 steam-cn.txt 格式
-RUN sed -i "s/^DOMAIN,/full:/" /nestingdns/default/site/steam-cn.txt
-RUN sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/default/site/steam-cn.txt
-# 修正 gamedownload-cn.txt 格式
-RUN sed -i "s/^DOMAIN,/full:/" /nestingdns/default/site/gamedownload-cn.txt
-RUN sed -i "s/^DOMAIN-SUFFIX,/domain:/" /nestingdns/default/site/gamedownload-cn.txt
-# direct-list 移除 dl.google.com、clientservices.googleapis.com、fonts.googleapis.com、update.googleapis.com、tools.google.com
-RUN sed -i "/full:dl.google.com/d" /nestingdns/default/site/direct-list.txt
-RUN sed -i "/full:clientservices.googleapis.com/d" /nestingdns/default/site/direct-list.txt
-RUN sed -i "/full:fonts.googleapis.com/d" /nestingdns/default/site/direct-list.txt
-RUN sed -i "/full:update.googleapis.com/d" /nestingdns/default/site/direct-list.txt
-RUN sed -i "/full:tools.google.com/d" /nestingdns/default/site/direct-list.txt
+RUN curl -sSL https://raw.githubusercontent.com/217heidai/RoutingRules/main/rules/direct.txt -o /nestingdns/default/site/direct.txt && \
+    curl -sSL https://raw.githubusercontent.com/217heidai/RoutingRules/main/rules/proxy.txt -o /nestingdns/default/site/proxy.txt && \
+    curl -sSL https://raw.githubusercontent.com/217heidai/RoutingRules/main/rules/private.txt -o /nestingdns/default/site/private.txt && \
+    curl -sSL https://raw.githubusercontent.com/217heidai/RoutingRules/main/rules/ipv4_china.txt -o /nestingdns/default/site/ipv4_china.txt && \
+    curl -sSL https://raw.githubusercontent.com/217heidai/RoutingRules/main/rules/ipv4_cloudflare.txt -o /nestingdns/default/site/ipv4_cloudflare.txt
 
 # 拷入文件
 COPY --from=smartdns-builder /usr/share/smartdns/wwwroot /nestingdns/www/smartdns

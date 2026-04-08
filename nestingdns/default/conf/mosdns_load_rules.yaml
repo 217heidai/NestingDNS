@@ -1,55 +1,50 @@
 plugins:
   # 直连域名
-  - tag: "geosite-cn"      # 插件的 tag。由用户自由设定但不能重复。
+  - tag: "domain_direct"   # 插件的 tag。由用户自由设定但不能重复。
     type: "domain_set"     # domain_set插件，载入的域名表可供其他插件引用。插件加载后，数据只占一份内存。引用的数据是共享的，多次被引用不会消耗格外内存。
     args:                  # 插件参数。取决于插件类型。
       files:               # 从文本文件载入
-        - "/nestingdns/etc/site/direct-list.txt"
-        - "/nestingdns/etc/site/apple-cn.txt"
-        - "/nestingdns/etc/site/steam-cn.txt"
-        - "/nestingdns/etc/site/gamedownload-cn.txt"
-        - "/nestingdns/etc/site/force-cn.txt"    # 自定义国内域名
+        - "/nestingdns/etc/site/direct.txt"
+        - "/nestingdns/etc/site/direct_custom.txt"    # 自定义直连域名
 
   # 代理域名
-  - tag: "geosite-nocn"
-    type: "domain_set"
-    args:
-      files: 
-        - "/nestingdns/etc/site/proxy-list.txt"
-        - "/nestingdns/etc/site/gfw.txt"
-        - "/nestingdns/etc/site/greatfire.txt"
-        - "/nestingdns/etc/site/force-nocn.txt"  # 自定义代理域名
-
-  # 局域网域名
-  - tag: "geosite-private"
+  - tag: "domain_proxy"
     type: "domain_set"
     args:
       files:
-        - "/nestingdns/etc/site/private.txt" # 内网域名
+        - "/nestingdns/etc/site/proxy.txt"
+        - "/nestingdns/etc/site/proxy_custom.txt"  # 自定义代理域名
 
-  # 国内 IP 段
-  - tag: "geoip-cn"
+  # 局域网域名
+  - tag: "domain_private"
+    type: "domain_set"
+    args:
+      files:
+        - "/nestingdns/etc/site/private.txt" # 局域网域名
+
+  # 国内 IPv4 段
+  - tag: "ipv4_china"
     type: ip_set
     args:
-      files: 
-        - "/nestingdns/etc/site/CN-ip-cidr.txt" # 国内 ip 段
+      files:
+        - "/nestingdns/etc/site/ipv4_china.txt" # 国内 ipv4 段
 
-  # cloudflare IP 段
-  - tag: "geoip-cloudflare"
+  # cloudflare IPv4 段
+  - tag: "ipv4_cloudflare"
     type: ip_set
     args:
-      files: 
-        - "/nestingdns/etc/site/cloudflare.txt" # cloudflare ip 段
+      files:
+        - "/nestingdns/etc/site/ipv4_cloudflare.txt" # cloudflare ipv4 段
 
-  # hosts 域名映射 IP 。如果请求的域名在 hosts 内，则将应答放入请求。采用域名 + 多个 ip 方式，如 dns.google 8.8.8.8 2001:4860:4860::8888
-  - tag: "hosts-local"
+  # hosts 域名映射 IP。如果请求的域名在 hosts 内，则将应答放入请求。采用域名 + 多个 ip 方式，如 dns.google 8.8.8.8 2001:4860:4860::8888
+  - tag: "hosts_local"
     type: "hosts"    # hosts 插件，域名映射 IP 。如果请求的域名在 hosts 内，则将应答放入请求。虽然都叫 hosts，但本插件所用的格式和平常 Win，Linux 系统内的那个 hosts 文件不一样。
     args:
       files:
         - "/nestingdns/etc/site/hosts.txt"
 
   # 缓存
-  #- tag: "cache-local" # mosdns 仅做临时缓存，主要缓存由 smartdns 处理
+  #- tag: "cache_local" # mosdns 仅做临时缓存，主要缓存由 smartdns 处理
   #  type: "cache"    # 缓存 DNS 应答的插件。如果请求命中缓存，则将缓存的应答放入请求。当某一请求经过 cache 后，cache 会在这个请求处理流程结束时自动将应答放入缓存。用户无需介入。注意: 本插件是本地缓存(适用于客户端或者局域网内的缓存)。不适用于服务器端缓存。不支持扩展 DNS 协议 (即 EDNS0)，请求的 EDNS0 部分会被无视，应答的 EDNS0 会被略去。
   #  args:
   #    size: 1024     # 内置存缓存大小。单位: 条。默认: 1024。每个 cache 插件的内存缓存是独立的。

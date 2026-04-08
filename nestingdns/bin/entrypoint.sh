@@ -55,19 +55,14 @@ init_file_conf adguardhome.yaml
 
 # /nestingdns/etc/site 初始化
 init_dir /nestingdns/etc/site
-init_file_site direct-list.txt
-init_file_site apple-cn.txt
-init_file_site force-cn.txt
-init_file_site proxy-list.txt
-init_file_site gfw.txt
-init_file_site greatfire.txt
-init_file_site force-nocn.txt
+init_file_site direct.txt
+init_file_site proxy.txt
 init_file_site private.txt
-init_file_site CN-ip-cidr.txt
-init_file_site cloudflare.txt
+init_file_site ipv4_china.txt
+init_file_site ipv4_cloudflare.txt
+init_file_site direct_custom.txt
+init_file_site proxy_custom.txt
 init_file_site hosts.txt
-init_file_site steam-cn.txt
-init_file_site gamedownload-cn.txt
 
 
 # /nestingdns/work 初始化
