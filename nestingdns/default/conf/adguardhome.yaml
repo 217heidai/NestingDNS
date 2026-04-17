@@ -2,6 +2,13 @@ http:
   pprof:
     port: 6060
     enabled: false
+  doh:
+    routes:
+      - GET /dns-query
+      - POST /dns-query
+      - GET /dns-query/{ClientID}
+      - POST /dns-query/{ClientID}
+    insecure_enabled: false
   address: 0.0.0.0:3000
   session_ttl: 720h
 users:
@@ -43,9 +50,9 @@ dns:
     - 127.0.0.0/8
     - ::1/128
   cache_enabled: true
-  cache_size: 33554432
-  cache_ttl_min: 5
-  cache_ttl_max: 86400
+  cache_size: 4194304
+  cache_ttl_min: 0
+  cache_ttl_max: 0
   cache_optimistic: false
   cache_optimistic_answer_ttl: 30s
   cache_optimistic_max_age: 12h
@@ -82,7 +89,6 @@ tls:
   port_dns_over_quic: 853
   port_dnscrypt: 0
   dnscrypt_config_file: ""
-  allow_unencrypted_doh: false
   certificate_chain: ""
   private_key: ""
   certificate_path: ""
@@ -185,4 +191,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 33
+schema_version: 34
