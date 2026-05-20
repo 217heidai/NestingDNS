@@ -22,7 +22,7 @@ jobs:
 
       - name: Get Cache ImageID
         id: getcacheimageid
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: .dockerimageid
           key: ${{ steps.getdockerimageid.outputs.imageid }}
@@ -33,12 +33,12 @@ jobs:
 
       - name: Create a Repository Dispatch Event
         if: steps.getcacheimageid.outputs.cache-hit != 'true'
-        uses: peter-evans/repository-dispatch@v2
+        uses: peter-evans/repository-dispatch@v4
         with:
           event-type: on-update
           
       - name: Delete Workflow Runs
-        uses: GitRML/delete-workflow-runs@main
+        uses: Mattraks/delete-workflow-runs@v2
         with:
-          retain_days: 30
-          keep_minimum_runs: 10
+          retain_days: 0
+          keep_minimum_runs: 2
