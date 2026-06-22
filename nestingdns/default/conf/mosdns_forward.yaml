@@ -44,26 +44,35 @@ plugins:
         exec: jump blackhole_cloudflare
 
   - tag: "ecs_overseas"
-    type: "sequence"
+    type: "ecs_handler"
     args:
-      - exec: ecs 101.101.101.101   # 使用台湾 Quad101 DNS IP
+      forward: false               # 是否转发来自下游的 ecs
+      preset: 101.101.101.101      # 使用台湾 Quad101 DNS IP
+      send: true                   # 是否发送 ecs
+      mask4: 32                    # ipv4 掩码。默认 24
 
   - tag: "ecs_mainland"
-    type: "sequence"
+    type: "ecs_handler"
     args:
-      - exec: ecs 222.66.251.8      # 使用宽带拨号自动获取的运营商 DNS IP
-  
+      forward: false               # 是否转发来自下游的 ecs
+      preset: 222.66.251.8         # 使用宽带拨号自动获取的运营商 DNS IP
+      send: true                   # 是否发送 ecs
+      mask4: 32                    # ipv4 掩码。默认 24
+
   - tag: "ecs_gfw"
-    type: "sequence"
+    type: "ecs_handler"
     args:
-      - exec: ecs 23.95.225.2       # 使用 VPS 测试 IP
+      forward: false               # 是否转发来自下游的 ecs
+      preset: 23.95.225.2          # 使用 VPS 测试 IP
+      send: true                   # 是否发送 ecs
+      mask4: 32                    # ipv4 掩码。默认 24
   
   # 调用 forward_overseas 解析，并记录日志
   - tag: "dns_overseas"
     type: "sequence"     # 按顺序组合多个插件，sequence 是个可执行插件。可以被其他插件(比如服务器插件)调用。sequence 与 sequence 联动请使用自带的跳转命令 (goto, jump ...)，不要使用 exec 。
     args:
       - exec: query_summary
-      - exec: jump ecs_overseas
+      - exec: $ecs_overseas
       - exec: $forward_overseas
       #- exec: jump best_ip
       - exec: ttl 0-300        # 设置成较小的 ttl。上游 smartdns overseas 组作为备用通道，已关闭缓存、测速，仅当 smartdns gfw 组异常时使用。
@@ -73,7 +82,7 @@ plugins:
     type: "sequence"
     args:
       - exec: query_summary
-      #- exec: jump ecs_mainland
+      #- exec: $ecs_mainland
       - exec: $forward_mainland
       #- exec: jump best_ip
   
@@ -82,7 +91,7 @@ plugins:
     type: "sequence"
     args:
       - exec: query_summary
-      #- exec: jump ecs_gfw
+      #- exec: $ecs_gfw
       - exec: $forward_gfw
       #- exec: jump best_ip
       - exec: ttl 0-300        # 多个代理地址切换的，设置成较小的 ttl。上游 smartdns gfw 组已关闭缓存、测速。
