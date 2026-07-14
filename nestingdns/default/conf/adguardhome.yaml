@@ -10,7 +10,7 @@ http:
       - POST /dns-query/{ClientID}
     insecure_enabled: false
   address: 0.0.0.0:3000
-  session_ttl: 720h
+  session_ttl: 30d
 users:
   - name: root
     password: $2a$10$zPt7mNJNOLkuDjRvGktzBOdO79aIw1Zoo8IU6rAtYQI6LKvWY82VG
@@ -97,7 +97,7 @@ tls:
 querylog:
   dir_path: /nestingdns/log
   ignored: []
-  interval: 24h
+  interval: 1d
   size_memory: 1000
   enabled: true
   ignored_enabled: false
@@ -105,7 +105,7 @@ querylog:
 statistics:
   dir_path: ""
   ignored: []
-  interval: 24h
+  interval: 1d
   enabled: true
   ignored_enabled: false
 filters:
@@ -159,6 +159,7 @@ filtering:
   rewrites: []
   safe_fs_patterns:
     - /nestingdns/work/adguardhome/userfilters/*
+  max_http_size: 256MB
   safebrowsing_cache_size: 1048576
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576
