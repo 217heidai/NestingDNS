@@ -110,11 +110,11 @@ statistics:
   ignored_enabled: false
 filters:
   - enabled: true
-    url: https://ghfast.top/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockdns.txt
+    url: https://gh-proxy.com/https://github.com/217heidai/adblockfilters/releases/download/rule/adblockdns.txt
     name: AdBlock DNS
     id: 1
   - enabled: true
-    url: https://ghfast.top/https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/adblockfilters.txt
+    url: https://gh-proxy.com/https://github.com/217heidai/adblockfilters/releases/download/rule/adblockfilters.txt
     name: AdBlock Filter
     id: 2
 whitelist_filters: []
