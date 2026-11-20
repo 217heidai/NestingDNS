@@ -1,7 +1,4 @@
 http:
-  pprof:
-    port: 6060
-    enabled: false
   doh:
     routes:
       - GET /dns-query
@@ -9,77 +6,80 @@ http:
       - GET /dns-query/{ClientID}
       - POST /dns-query/{ClientID}
     insecure_enabled: false
+  pprof:
+    port: 6060
+    enabled: false
   address: 0.0.0.0:3000
   session_ttl: 30d
 users:
   - name: root
-    password: $2a$10$zPt7mNJNOLkuDjRvGktzBOdO79aIw1Zoo8IU6rAtYQI6LKvWY82VG
+    password: $2a$10$8ANlzRzk1lYTRa/z5Fo84OwgdtugFjwqXbkUqzaA0CNaunJj080NG
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
-language: ""
+language: zh-cn
 theme: auto
 dns:
+  edns_client_subnet:
+    custom_ip: ""
+    enabled: false
+    use_custom: false
+  pending_requests:
+    enabled: true
+  ipset_file: ""
+  upstream_dns_file: ""
+  upstream_mode: load_balance
   bind_hosts:
     - 0.0.0.0
-  port: 4053
-  anonymize_client_ip: false
-  ratelimit: 0
-  ratelimit_subnet_len_ipv4: 24
-  ratelimit_subnet_len_ipv6: 56
   ratelimit_whitelist: []
-  refuse_any: true
-  upstream_dns:
-    - 127.0.0.1:5053
-  upstream_dns_file: ""
+  dns64_prefixes: []
+  private_networks: []
+  trusted_proxies:
+    - 127.0.0.0/8
+    - ::1/128
+  allowed_clients: []
+  blocked_hosts:
+    - version.bind
+    - id.server
+    - hostname.bind
+  bogus_nxdomain: []
   bootstrap_dns:
     - 223.5.5.5
     - 223.6.6.6
     - 1.12.12.12
     - 120.53.53.53
-  fallback_dns: []
-  upstream_mode: load_balance
-  fastest_timeout: 1s
-  allowed_clients: []
   disallowed_clients: []
-  blocked_hosts:
-    - version.bind
-    - id.server
-    - hostname.bind
-  trusted_proxies:
-    - 127.0.0.0/8
-    - ::1/128
-  cache_enabled: true
-  cache_size: 4194304
-  cache_ttl_min: 0
-  cache_ttl_max: 0
-  cache_optimistic: false
+  fallback_dns: []
+  ipset: []
+  local_ptr_upstreams: []
+  upstream_dns:
+    - 127.0.0.1:5053
   cache_optimistic_answer_ttl: 30s
   cache_optimistic_max_age: 12h
-  bogus_nxdomain: []
-  aaaa_disabled: true
-  enable_dnssec: false
-  edns_client_subnet:
-    custom_ip: ""
-    enabled: false
-    use_custom: false
-  max_goroutines: 300
-  handle_ddr: true
-  ipset: []
-  ipset_file: ""
-  bootstrap_prefer_ipv6: false
+  fastest_timeout: 1s
   upstream_timeout: 10s
-  private_networks: []
-  use_private_ptr_resolvers: false
-  local_ptr_upstreams: []
-  use_dns64: false
-  dns64_prefixes: []
-  serve_http3: false
-  use_http3_upstreams: false
-  serve_plain_dns: true
+  max_goroutines: 300
+  ratelimit_subnet_len_ipv4: 24
+  ratelimit_subnet_len_ipv6: 56
+  cache_ttl_max: 0
+  cache_ttl_min: 0
+  cache_size: 4194304
+  ratelimit: 0
+  port: 4053
+  aaaa_disabled: true
+  anonymize_client_ip: false
+  bootstrap_prefer_ipv6: false
+  cache_enabled: true
+  cache_optimistic: false
+  enable_dnssec: false
+  handle_ddr: true
   hostsfile_enabled: false
-  pending_requests:
-    enabled: true
+  refuse_any: true
+  serve_http3: false
+  serve_plain_dns: true
+  use_dns64: false
+  use_http3_upstreams: false
+  use_private_ptr_resolvers: false
 tls:
   enabled: false
   server_name: ""
@@ -100,8 +100,8 @@ querylog:
   interval: 1d
   size_memory: 1000
   enabled: true
-  ignored_enabled: false
   file_enabled: true
+  ignored_enabled: false
 statistics:
   dir_path: ""
   ignored: []
@@ -120,22 +120,22 @@ filters:
 whitelist_filters: []
 user_rules: []
 dhcp:
-  enabled: false
-  interface_name: ""
-  local_domain_name: lan
   dhcpv4:
     gateway_ip: ""
-    subnet_mask: ""
     range_start: ""
     range_end: ""
-    lease_duration: 86400
-    icmp_timeout_msec: 1000
+    subnet_mask: ""
     options: []
+    icmp_timeout_msec: 1000
+    lease_duration: 86400
   dhcpv6:
     range_start: ""
     lease_duration: 86400
     ra_slaac_only: false
     ra_allow_slaac: false
+  interface_name: ""
+  local_domain_name: lan
+  enabled: false
 filtering:
   blocking_ipv4: ""
   blocking_ipv6: ""
@@ -180,16 +180,16 @@ clients:
     hosts: true
   persistent: []
 log:
-  enabled: true
   file: ""
+  max_age: 3
   max_backups: 0
   max_size: 100
-  max_age: 3
   compress: false
+  enabled: true
   local_time: false
   verbose: false
 os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 34
+schema_version: 35
